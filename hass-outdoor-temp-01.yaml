@@ -1,0 +1,62 @@
+substitutions:
+  name: hass-outdoor-temp-01
+  friendly_name: Outdoor 01
+  comment: D1 Mini - PT100 - OLED
+
+packages:
+  common: !include packages/common-8266.yaml
+
+spi:
+  clk_pin: D5
+  mosi_pin: D7
+  miso_pin: D6
+
+sensor:
+  - platform: max31865
+    id: temperature
+    name:  "${friendly_name} Temperature"
+    cs_pin: D3
+    reference_resistance: 430 Ω
+    rtd_nominal_resistance: 100 Ω
+    rtd_wires: 3
+    update_interval: 60s
+    mains_filter: 50HZ
+    
+font:
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: f_mdi
+    size: 16
+    glyphs:
+      - "\U000F0C5F" # mdi-close-network-outline
+      - "\U000F0C54" # mdi-check-network-outline
+  - file: fonts/AzeretMono-Medium.ttf
+    id: f_clock
+    size: 16
+    glyphs: '0123456789:'
+  - file: fonts/DelugiaComplete.ttf
+    id: f_temperature
+    size: 32
+    glyphs: -0123456789.°
+    
+display:
+  - platform: ssd1306_spi
+    model: "SSD1306 128x64"
+    contrast: 50%
+    cs_pin: D1
+    dc_pin: D2
+    reset_pin: D8
+    lambda: |-
+      it.filled_rectangle(0, 0, 128, 16);
+      it.strftime(128/2, 0, id(f_clock), COLOR_OFF, TextAlign::TOP_CENTER, "%H:%M:%S", id(hass_time).now());
+
+      if(id(system_status).state == false) {
+        it.print(128, 0, id(f_mdi), COLOR_OFF, TextAlign::TOP_RIGHT, "\U000F0C5F");
+      } else {
+      //  it.print(128, 0, id(f_mdi), COLOR_OFF, TextAlign::TOP_RIGHT, "\U000F0C54");
+      }
+      
+      if(!isnan(id(temperature).state)) {
+        it.printf(128/2, 48/2+16, id(f_temperature), TextAlign::CENTER, "%.1f°", id(temperature).state);
+      } else {
+        it.print(128/2, 48/2+16, id(f_temperature), TextAlign::CENTER, "--.-°");
+      }

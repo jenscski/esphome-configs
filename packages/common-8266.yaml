@@ -1,0 +1,14 @@
+---
+substitutions:
+  board: d1_mini
+
+esp8266:
+  board: "${board}"
+
+status_led:
+  pin:
+    number: LED
+    inverted: true
+
+packages:
+  base: !include common-base.yaml
