@@ -6,6 +6,39 @@ substitutions:
 packages:
   common: !include packages/common-32.yaml
 
+globals:
+  - id: media_artist_x
+    type: int
+    restore_value: false
+    initial_value: '-1'
+  - id: media_artist_w
+    type: int
+    restore_value: false
+    initial_value: '-1'
+  - id: media_title_x
+    type: int
+    restore_value: false
+    initial_value: '-1'
+  - id: media_title_w
+    type: int
+    restore_value: false
+    initial_value: '-1'
+  - id: media_album_x
+    type: int
+    restore_value: false
+    initial_value: '-1'
+  - id: media_album_w
+    type: int
+    restore_value: false
+    initial_value: '-1'
+  - id: media_channel_x
+    type: int
+    restore_value: false
+    initial_value: '-1'
+  - id: media_channel_w
+    type: int
+    restore_value: false
+    initial_value: '-1'
 external_components:
   - source: github://jenscski/esphome-components@main
     components: [ sh1107_base, sh1107_i2c ]
@@ -20,6 +53,7 @@ display:
     id: my_display
     rotation: 90
     contrast: 0.01
+    update_interval: 75ms
     pages:
       - id: p_idle
         lambda: |-
@@ -31,7 +65,7 @@ display:
           {
             if(!id(media_playing).state)
             {
-              it.strftime(128/2, (64 - 14)/2, id(f_clock), COLOR_ON, TextAlign::CENTER, "%H:%M:%S", id(hass_time).now());
+              it.strftime(128/2, (64 - 14)/2, id(f_clock), COLOR_ON, TextAlign::CENTER, "%H:%M", id(hass_time).now());
               if(!id(media_channel).state.empty())
                 it.print(0, 64, id(f_inter_l_12), TextAlign::BOTTOM_LEFT, id(media_channel).state.c_str());
               else if(!id(media_artist).state.empty())
@@ -39,30 +73,74 @@ display:
             }
             else
             {
+              if(id(media_channel_w) < 0)
+              {
+                int x1, y1, width, height;
+                it.get_text_bounds(0, 0, id(media_channel).state.c_str(), id(f_inter_l_12), TextAlign::CENTER, &x1, &y1, &width, &height);
+
+                id(media_channel_x) = 0;
+                id(media_channel_w) = width;
+              }
+
+              if(id(media_artist_w) < 0)
+              {
+                int x1, y1, width, height;
+                it.get_text_bounds(0, 0, id(media_artist).state.c_str(), id(f_inter_l_12), TextAlign::CENTER, &x1, &y1, &width, &height);
+
+                id(media_artist_x) = 0;
+                id(media_artist_w) = width;
+              }
+
+              if(id(media_title_w) < 0)
+              {
+                int x1, y1, width, height;
+                it.get_text_bounds(0, 0, id(media_title).state.c_str(), id(f_inter_l_12), TextAlign::CENTER, &x1, &y1, &width, &height);
+
+                id(media_title_x) = 0;
+                id(media_title_w) = width;
+              }
+              else if(id(media_title_w) > 128 && id(media_title_w) + id(media_title_x) < 110)
+              {
+                id(media_title_x) = 0;
+              }
+              else if(id(media_title_w) > 128)
+              {
+                id(media_title_x) --;
+              }
+
+              if(id(media_album_w) < 0)
+              {
+                int x1, y1, width, height;
+                it.get_text_bounds(0, 0, id(media_album).state.c_str(), id(f_inter_l_12), TextAlign::CENTER, &x1, &y1, &width, &height);
+
+                id(media_album_x) = 0;
+                id(media_album_w) = width;
+              }
+
               int pos = 0;
 
               if(!id(media_channel).state.empty())
-                it.print(0, 16 * pos++, id(f_inter_l_12), id(media_channel).state.c_str());
+                it.print(id(media_channel_x), 16 * pos++, id(f_inter_l_12), id(media_channel).state.c_str());
 
               if(!id(media_artist).state.empty())
-                it.print(0, 16 * pos++, id(f_inter_l_12), id(media_artist).state.c_str());
+                it.print(id(media_artist_x), 16 * pos++, id(f_inter_l_12), id(media_artist).state.c_str());
 
               if(!id(media_title).state.empty())
-                it.print(0, 16 * pos++, id(f_inter_l_12), id(media_title).state.c_str());
+                it.print(id(media_title_x), 16 * pos++, id(f_inter_l_12), id(media_title).state.c_str());
                 
               if(!id(media_album).state.empty())
-                it.print(0, 16 * pos++, id(f_inter_l_12), id(media_album).state.c_str());
+                it.print(id(media_album_x), 16 * pos++, id(f_inter_l_12), id(media_album).state.c_str());
 
-              it.strftime(0, 64, id(f_clock_small), COLOR_ON, TextAlign::BOTTOM_LEFT, "%H:%M:%S", id(hass_time).now());
+              it.strftime(0, 64, id(f_clock_small), COLOR_ON, TextAlign::BOTTOM_LEFT, "%H:%M", id(hass_time).now());
             }
 
-            // footer
+            // volume footer
             int w = 35;
             int h = 14;
             it.filled_rectangle(128 - w, 64 - h, w, h, COLOR_OFF);
             it.printf(128 - 13, 64, id(f_inter_l_12), TextAlign::BOTTOM_RIGHT, "%d", (int)id(media_volume).state);
             it.print(128,       64, id(f_mdi_12),     TextAlign::BOTTOM_RIGHT, id(media_muted).state ? "\U000F0581" : "\U000F057E");
-            it.line(0, 64 - 15, 128, 64 - 15);
+            //it.line(0, 64 - 15, 128, 64 - 15);
           }
 
 font:
@@ -72,7 +150,7 @@ font:
     glyphs: '!''&"%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅÄÖ abcdefghijklmnopqrstuvwxyzæøåäö'
   - file: fonts/AzeretMono-Medium.ttf
     id: f_clock
-    size: 24
+    size: 32
     glyphs: '0123456789:'
   - file: fonts/AzeretMono-Medium.ttf
     id: f_clock_small
@@ -92,6 +170,12 @@ text_sensor:
     internal: true
     on_value:
       then:
+        - globals.set:
+            id: media_artist_x
+            value: '-1'
+        - globals.set:
+            id: media_artist_w
+            value: '-1'
         - component.update: my_display
   - platform: homeassistant
     id: media_channel
@@ -99,6 +183,12 @@ text_sensor:
     internal: true
     on_value:
       then:
+        - globals.set:
+            id: media_channel_x
+            value: '-1'
+        - globals.set:
+            id: media_channel_w
+            value: '-1'
         - component.update: my_display
   - platform: homeassistant
     id: media_title
@@ -106,6 +196,12 @@ text_sensor:
     internal: true
     on_value:
       then:
+        - globals.set:
+            id: media_title_x
+            value: '-1'
+        - globals.set:
+            id: media_title_w
+            value: '-1'
         - component.update: my_display
   - platform: homeassistant
     id: media_album
@@ -113,6 +209,12 @@ text_sensor:
     internal: true
     on_value:
       then:
+        - globals.set:
+            id: media_album_x
+            value: '-1'
+        - globals.set:
+            id: media_album_w
+            value: '-1'
         - component.update: my_display
 sensor:
   - platform: homeassistant
