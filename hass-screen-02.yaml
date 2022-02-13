@@ -9,36 +9,29 @@ packages:
 globals:
   - id: media_artist_x
     type: int
-    restore_value: false
     initial_value: '-1'
   - id: media_artist_w
     type: int
-    restore_value: false
     initial_value: '-1'
   - id: media_title_x
     type: int
-    restore_value: false
     initial_value: '-1'
   - id: media_title_w
     type: int
-    restore_value: false
     initial_value: '-1'
   - id: media_album_x
     type: int
-    restore_value: false
     initial_value: '-1'
   - id: media_album_w
     type: int
-    restore_value: false
     initial_value: '-1'
   - id: media_channel_x
     type: int
-    restore_value: false
     initial_value: '-1'
   - id: media_channel_w
     type: int
-    restore_value: false
     initial_value: '-1'
+
 external_components:
   - source: github://jenscski/esphome-components@main
     components: [ sh1107_base, sh1107_i2c ]
@@ -138,21 +131,21 @@ display:
             int w = 35;
             int h = 14;
             it.filled_rectangle(128 - w, 64 - h, w, h, COLOR_OFF);
-            it.printf(128 - 13, 64, id(f_inter_l_12), TextAlign::BOTTOM_RIGHT, "%d", (int)id(media_volume).state);
+            it.printf(128 - 13, 64, id(f_clock_small), TextAlign::BOTTOM_RIGHT, "%d", (int)id(media_volume).state);
             it.print(128,       64, id(f_mdi_12),     TextAlign::BOTTOM_RIGHT, id(media_muted).state ? "\U000F0581" : "\U000F057E");
             //it.line(0, 64 - 15, 128, 64 - 15);
           }
 
 font:
-  - file: fonts/Inter-Light.ttf
-    size: 12
+  - file: fonts/WorkSans-Regular.ttf
+    size: 14
     id: f_inter_l_12
     glyphs: '!''&"%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅÄÖ abcdefghijklmnopqrstuvwxyzæøåäö'
   - file: fonts/AzeretMono-Medium.ttf
     id: f_clock
     size: 32
     glyphs: '0123456789:'
-  - file: fonts/AzeretMono-Medium.ttf
+  - file: fonts/AzeretMono-Light.ttf
     id: f_clock_small
     size: 12
     glyphs: '0123456789:'
