@@ -21,6 +21,8 @@ sensor:
     rtd_wires: 3
     update_interval: 60s
     mains_filter: 50HZ
+    filters:
+      - median
     
 font:
   - file: fonts/materialdesignicons-webfont.ttf
@@ -41,7 +43,7 @@ font:
 display:
   - platform: ssd1306_spi
     model: "SSD1306 128x64"
-    contrast: 50%
+    contrast: 10%
     cs_pin: D1
     dc_pin: D2
     reset_pin: D8
