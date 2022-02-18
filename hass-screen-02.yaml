@@ -5,7 +5,7 @@ substitutions:
 
 packages:
   common: !include packages/common-32.yaml
-
+  
 globals:
   - id: media_artist_x
     type: int
@@ -45,14 +45,17 @@ display:
     model: SH1107 64X128
     id: my_display
     rotation: 90
-    contrast: 0.01
+    contrast: 1%
     update_interval: 75ms
     pages:
       - id: p_idle
         lambda: |-
+          const int padding = 1500 / id(my_display).get_update_interval();
+          const char* tag = "${name}";
+
           if(!id(system_status).state)
           {
-            it.print(128/2, 64/2, id(f_inter_l_12), TextAlign::CENTER, "Missing server");
+            it.print(128/2, 64/2, id(f_mdi_64), TextAlign::CENTER, "\U000F0C5F");
           }
           else
           {
@@ -71,8 +74,16 @@ display:
                 int x1, y1, width, height;
                 it.get_text_bounds(0, 0, id(media_channel).state.c_str(), id(f_inter_l_12), TextAlign::CENTER, &x1, &y1, &width, &height);
 
-                id(media_channel_x) = 0;
+                id(media_channel_x) = padding;
                 id(media_channel_w) = width;
+              }
+              else if(id(media_channel_w) > 128 && (id(media_channel_w) - 128) + id(media_channel_x) < -padding)
+              {
+                id(media_channel_x) = padding;
+              }
+              else if(id(media_channel_w) > 128)
+              {
+                id(media_channel_x) --;
               }
 
               if(id(media_artist_w) < 0)
@@ -80,8 +91,16 @@ display:
                 int x1, y1, width, height;
                 it.get_text_bounds(0, 0, id(media_artist).state.c_str(), id(f_inter_l_12), TextAlign::CENTER, &x1, &y1, &width, &height);
 
-                id(media_artist_x) = 0;
+                id(media_artist_x) = padding;
                 id(media_artist_w) = width;
+              }
+              else if(id(media_artist_w) > 128 && (id(media_artist_w) - 128) + id(media_artist_x) < -padding)
+              {
+                id(media_artist_x) = padding;
+              }
+              else if(id(media_artist_w) > 128)
+              {
+                id(media_artist_x) --;
               }
 
               if(id(media_title_w) < 0)
@@ -89,12 +108,12 @@ display:
                 int x1, y1, width, height;
                 it.get_text_bounds(0, 0, id(media_title).state.c_str(), id(f_inter_l_12), TextAlign::CENTER, &x1, &y1, &width, &height);
 
-                id(media_title_x) = 0;
+                id(media_title_x) = padding;
                 id(media_title_w) = width;
               }
-              else if(id(media_title_w) > 128 && id(media_title_w) + id(media_title_x) < 110)
+              else if(id(media_title_w) > 128 && (id(media_title_w) - 128) + id(media_title_x) < -padding)
               {
-                id(media_title_x) = 0;
+                id(media_title_x) = padding;
               }
               else if(id(media_title_w) > 128)
               {
@@ -106,23 +125,52 @@ display:
                 int x1, y1, width, height;
                 it.get_text_bounds(0, 0, id(media_album).state.c_str(), id(f_inter_l_12), TextAlign::CENTER, &x1, &y1, &width, &height);
 
+                id(media_album_x) = padding;
+                id(media_album_w) = width;
+              }
+              else if(id(media_album_w) > 128 && (id(media_album_w) - 128) + id(media_album_x) < -padding)
+              {
+                id(media_album_x) = padding;
+              }
+              else if(id(media_album_w) > 128)
+              {
+                id(media_album_x) --;
+              }
+
+              if(id(media_album_w) < 0)
+              {
+                int x1, y1, width, height;
+                it.get_text_bounds(0, 0, id(media_album).state.c_str(), id(f_inter_l_12), TextAlign::CENTER, &x1, &y1, &width, &height);
+
                 id(media_album_x) = 0;
                 id(media_album_w) = width;
               }
 
+              auto xpos = [](int x, int w)
+              {
+                if(w <= 128)
+                  return 0;
+
+                int ret = x;
+                ret = min(ret, 0);
+                ret = max(ret, 128 - w);
+
+                return ret;
+              };
+
               int pos = 0;
 
               if(!id(media_channel).state.empty())
-                it.print(id(media_channel_x), 16 * pos++, id(f_inter_l_12), id(media_channel).state.c_str());
-
+                it.print(xpos(id(media_channel_x), id(media_channel_w)), 16 * pos++, id(f_inter_l_12), id(media_channel).state.c_str());
+              
               if(!id(media_artist).state.empty())
-                it.print(id(media_artist_x), 16 * pos++, id(f_inter_l_12), id(media_artist).state.c_str());
-
+                it.print(xpos(id(media_artist_x), id(media_artist_w)), 16 * pos++, id(f_inter_l_12), id(media_artist).state.c_str());
+              
               if(!id(media_title).state.empty())
-                it.print(id(media_title_x), 16 * pos++, id(f_inter_l_12), id(media_title).state.c_str());
-                
+                it.print(xpos(id(media_title_x), id(media_title_w)), 16 * pos++, id(f_inter_l_12), id(media_title).state.c_str());
+              
               if(!id(media_album).state.empty())
-                it.print(id(media_album_x), 16 * pos++, id(f_inter_l_12), id(media_album).state.c_str());
+                it.print(xpos(id(media_album_x), id(media_album_w)), 16 * pos++, id(f_inter_l_12), id(media_album).state.c_str());
 
               it.strftime(0, 64, id(f_clock_small), COLOR_ON, TextAlign::BOTTOM_LEFT, "%H:%M", id(hass_time).now());
             }
@@ -136,11 +184,12 @@ display:
             //it.line(0, 64 - 15, 128, 64 - 15);
           }
 
+# https://maximilian.schalch.de/2018/05/complete-list-of-european-special-characters/
 font:
   - file: fonts/WorkSans-Regular.ttf
     size: 14
     id: f_inter_l_12
-    glyphs: '!''&"%()+=,-_.:°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅÄÖ abcdefghijklmnopqrstuvwxyzæøåäö'
+    glyphs: '!''&«»#"%’^´()+=,-_.:/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
   - file: fonts/AzeretMono-Medium.ttf
     id: f_clock
     size: 32
@@ -155,6 +204,11 @@ font:
     glyphs:
       - "\U000F057E" # mdi-volume-high
       - "\U000F0581" # mdi-volume-off
+  - file: fonts/materialdesignicons-webfont.ttf
+    size: 64
+    id: f_mdi_64
+    glyphs:
+      - "\U000F0C5F" # mdi-close-network-outline
 
 text_sensor:
   - platform: homeassistant
