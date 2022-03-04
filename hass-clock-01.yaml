@@ -1,0 +1,47 @@
+substitutions:
+  name: hass-clock-01
+  friendly_name: Clock 01
+  comment: D1 Mini - Clock
+
+packages:
+  common: !include packages/common-8266.yaml
+  
+esp8266:
+  board: nodemcuv2
+  restore_from_flash: true
+  
+number:
+  - platform: template
+    id: brightness
+    name: "${friendly_name} Brightness"
+    icon: mdi:brightness-5
+    step: 1
+    min_value: 0
+    max_value: 255
+    optimistic: true
+    initial_value: 255
+    restore_value: true
+
+uart:
+  tx_pin: D8
+  baud_rate: 9600
+  
+i2c:
+  
+time:
+  - platform: ds1307
+    
+# Example configuration entry
+interval:
+  - interval: 1s
+    then:
+      - uart.write: !lambda
+          return {0x7a, (byte)id(brightness).state};
+      - uart.write: [0x77, 0x02]
+      - uart.write: [0x79, 0x00]
+      - uart.write: !lambda
+          auto s = id(hass_time).now().strftime("%H%M");
+          return std::vector<unsigned char>( s.begin(), s.end() );
+  - interval: 1h
+    then:
+      - ds1307.write_time
