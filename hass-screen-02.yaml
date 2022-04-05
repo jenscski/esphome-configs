@@ -35,6 +35,8 @@ globals:
 external_components:
   - source: github://jenscski/esphome-components@main
     components: [ sh1107_base, sh1107_i2c ]
+  - source: github://pr#3243
+    components: [ font ]
 
 i2c:
   frequency: 800kHz
@@ -186,10 +188,12 @@ display:
 
 # https://maximilian.schalch.de/2018/05/complete-list-of-european-special-characters/
 font:
-  - file: fonts/WorkSans-Regular.ttf
+#  - file: fonts/WorkSans-Regular.ttf
+#  - file: gfonts://Work Sans@Regular
+  - file: gfonts://Ubuntu@Regular
     size: 14
     id: f_inter_l_12
-    glyphs: '!''&«»#"%’^´()+=,-_.:/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
+    glyphs: '!''&«»#"%’^´()+•=,-_.:/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
   - file: fonts/AzeretMono-Medium.ttf
     id: f_clock
     size: 32
