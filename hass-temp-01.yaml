@@ -1,0 +1,66 @@
+substitutions:
+  name: hass-temp-01
+  friendly_name: Temperature 01
+  comment: NodeMCU - MQTT - DS18B20
+
+esphome:
+  name: ${name}
+  comment: ${comment}
+
+packages:
+  mqtt: !include packages/common/mqtt.yaml
+  ota: !include packages/common/ota.yaml
+  sensors: !include packages/common/sensors.yaml
+  text_sensor: !include packages/common/text_sensors.yaml
+  binary_sensors: !include packages/common/binary_sensors.yaml
+  logger: !include packages/common/logger.yaml
+  switches: !include packages/common/switches.yaml
+  buttons: !include packages/common/buttons.yaml
+
+esp8266:
+  board: nodemcuv2
+  restore_from_flash: true
+  
+dallas:
+  - pin: D4
+
+wifi:
+  ap: {}
+
+captive_portal:
+
+time:
+  - platform: sntp
+    id: sntp_time
+    
+binary_sensor:
+- platform: gpio
+  name: ${friendly_name} Button
+  pin:
+    number: D3
+    inverted: true
+    mode:
+      input: true
+      pullup: true
+
+sensor:
+- platform: dallas
+  address: '0x7603170375d1ff28'
+  name: "${friendly_name} #1"
+  filters:
+    - median
+- platform: dallas
+  address: '0x610317037429ff28'
+  name: "${friendly_name} #2"
+  filters:
+    - median
+- platform: dallas
+  address: '0xe70517028d85ff28'
+  name: "${friendly_name} #3"
+  filters:
+    - median
+
+status_led:
+  pin:
+    number: LED
+    inverted: true
