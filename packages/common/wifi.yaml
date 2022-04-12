@@ -4,7 +4,9 @@ substitutions:
 
 wifi:
   # use_address: $ip
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
   reboot_timeout: $wifi_reboot_timeout
-  fast_connect: true
+#  fast_connect: true
+  networks:
+  - ssid: !secret wifi_ssid
+    password: !secret wifi_password
+    priority: 0.0

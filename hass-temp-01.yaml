@@ -8,6 +8,7 @@ esphome:
   comment: ${comment}
 
 packages:
+  wifi: !include packages/common/wifi.yaml
   mqtt: !include packages/common/mqtt.yaml
   ota: !include packages/common/ota.yaml
   sensors: !include packages/common/sensors.yaml
@@ -25,6 +26,10 @@ dallas:
   - pin: D4
 
 wifi:
+  networks:
+  - ssid: !secret wifi_ssid_lexit
+    password: !secret wifi_password_lexit
+    priority: 1.0
   ap: {}
 
 captive_portal:
