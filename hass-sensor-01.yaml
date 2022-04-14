@@ -14,5 +14,5 @@ sensor:
       name: "${friendly_name} Temperature"
     humidity:
       name: "${friendly_name} Humidity"
-    address: 0x44
+    address: 0x45
     update_interval: 60s
