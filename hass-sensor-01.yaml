@@ -12,7 +12,11 @@ sensor:
   - platform: sht3xd
     temperature:
       name: "${friendly_name} Temperature"
+      filters:
+      - median:
     humidity:
       name: "${friendly_name} Humidity"
+      filters:
+      - median:
     address: 0x45
     update_interval: 60s
