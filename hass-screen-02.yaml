@@ -5,7 +5,7 @@ substitutions:
 
 packages:
   common: !include packages/common-32.yaml
-  
+
 globals:
   - id: media_artist_x
     type: int
@@ -35,8 +35,6 @@ globals:
 external_components:
   - source: github://jenscski/esphome-components@main
     components: [ sh1107_base, sh1107_i2c ]
-#  - source: github://pr#3243
-#    components: [ font ]
 
 i2c:
   frequency: 800kHz
@@ -48,7 +46,7 @@ display:
     id: my_display
     rotation: 90
     contrast: 1%
-    update_interval: 75ms
+    update_interval: 150ms
     pages:
       - id: p_idle
         lambda: |-
@@ -192,11 +190,11 @@ font:
     size: 14
     id: f_media
     glyphs: '!''&«»#"%’^´()+•=,-_.:/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
-  - file: fonts/AzeretMono-Medium.ttf
+  - file: gfonts://Azeret Mono@Medium
     id: f_clock
     size: 32
     glyphs: '0123456789:'
-  - file: fonts/AzeretMono-Light.ttf
+  - file: gfonts://Azeret Mono@Light
     id: f_clock_small
     size: 12
     glyphs: '0123456789:'

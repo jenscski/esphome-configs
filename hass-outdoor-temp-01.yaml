@@ -31,11 +31,11 @@ font:
     glyphs:
       - "\U000F0C5F" # mdi-close-network-outline
       - "\U000F0C54" # mdi-check-network-outline
-  - file: fonts/AzeretMono-Medium.ttf
+  - file: gfonts://Azeret Mono@Medium
     id: f_clock
     size: 16
     glyphs: '0123456789:'
-  - file: fonts/DelugiaComplete.ttf
+  - file: gfonts://Azeret Mono@Medium
     id: f_temperature
     size: 32
     glyphs: -0123456789.°
