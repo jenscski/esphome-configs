@@ -53,8 +53,8 @@ sensor:
   name: "${friendly_name} Temperature"
   index: 0
 #  address: '0x610317037429ff28'
-#  filters:
-#    - median
+  filters:
+    - median
 
 status_led:
   pin:
