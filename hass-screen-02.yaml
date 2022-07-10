@@ -2,6 +2,7 @@ substitutions:
   name: hass-screen-02
   friendly_name: Screen 02
   comment: Adafruit HUZZAH32 – Sonos Screen
+  board: featheresp32
 
 packages:
   common: !include packages/common-32.yaml

@@ -2,12 +2,12 @@ substitutions:
   name: hass-clock-01
   friendly_name: Clock 01
   comment: NodeMCU - Clock
+  board: nodemcuv2
 
 packages:
   common: !include packages/common-8266.yaml
   
 esp8266:
-  board: nodemcuv2
   restore_from_flash: true
   
 number:
