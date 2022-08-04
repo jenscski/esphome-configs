@@ -9,12 +9,11 @@ esphome:
 
 packages:
   mqtt: !include packages/common/mqtt.yaml
-  ota: !include packages/common/ota.yaml
+#  ota: !include packages/common/ota.yaml
   sensors: !include packages/common/sensors.yaml
   text_sensor: !include packages/common/text_sensors.yaml
   binary_sensors: !include packages/common/binary_sensors.yaml
   logger: !include packages/common/logger.yaml
-  switches: !include packages/common/switches.yaml
   buttons: !include packages/common/buttons.yaml
 
 esp8266:
@@ -29,16 +28,9 @@ dallas:
 wifi:
   fast_connect: true
   ssid: !secret wifi_ssid_lexit
-    password: !secret wifi_password_lexit
-  
-#  ap: {}
+  password: !secret wifi_password_lexit
 
-#captive_portal:
 
-time:
-  - platform: sntp
-    id: sntp_time
-    
 binary_sensor:
 - platform: gpio
   name: ${friendly_name} Button
@@ -55,7 +47,10 @@ sensor:
   index: 0
 #  address: '0x610317037429ff28'
   filters:
-    - median
+    - median:
+        window_size: 4
+        send_every: 2
+        send_first_at: 2
 
 status_led:
   pin:
