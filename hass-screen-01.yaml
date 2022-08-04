@@ -1,7 +1,7 @@
 substitutions:
-  name: hass-screen-02
-  friendly_name: Screen 02
-  comment: Adafruit HUZZAH32 – Sonos Screen Kjøkken
+  name: hass-screen-01
+  friendly_name: Screen 01
+  comment: Adafruit HUZZAH32 – Sonos Screen Kontor
   board: featheresp32
 
 packages:
@@ -214,7 +214,7 @@ font:
 text_sensor:
   - platform: homeassistant
     id: media_artist
-    entity_id: sensor.media_artist_kjokken
+    entity_id: sensor.media_artist_kontor
     internal: true
     on_value:
       then:
@@ -226,7 +226,7 @@ text_sensor:
             value: '-1'
   - platform: homeassistant
     id: media_channel
-    entity_id: sensor.media_channel_kjokken
+    entity_id: sensor.media_channel_kontor
     internal: true
     on_value:
       then:
@@ -238,7 +238,7 @@ text_sensor:
             value: '-1'
   - platform: homeassistant
     id: media_title
-    entity_id: sensor.media_title_kjokken
+    entity_id: sensor.media_title_kontor
     internal: true
     on_value:
       then:
@@ -250,7 +250,7 @@ text_sensor:
             value: '-1'
   - platform: homeassistant
     id: media_album
-    entity_id: sensor.media_album_kjokken
+    entity_id: sensor.media_album_kontor
     internal: true
     on_value:
       then:
@@ -263,15 +263,15 @@ text_sensor:
 sensor:
   - platform: homeassistant
     id: media_volume
-    entity_id: sensor.media_volume_kjokken
+    entity_id: sensor.media_volume_kontor
     internal: true
 
 binary_sensor:
   - platform: homeassistant
     id: media_playing
-    entity_id: sensor.media_playing_kjokken
+    entity_id: sensor.media_playing_kontor
     internal: true
   - platform: homeassistant
     id: media_muted
-    entity_id: sensor.media_muted_kjokken
+    entity_id: sensor.media_muted_kontor
     internal: true
