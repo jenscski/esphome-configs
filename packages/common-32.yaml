@@ -5,9 +5,8 @@ esp32:
   board: ${board}
   framework:
     type: arduino
-    version: 2.0.4
-    source: https://github.com/espressif/arduino-esp32#2.0.4
-    platform_version: 5.0.0
+#    version: 2.0.4
+#    platform_version: 5.1.0
 
 status_led:
   pin:
