@@ -16,14 +16,18 @@ sensor:
   - platform: max31865
     id: temperature
     name:  "${friendly_name} Temperature"
+    accuracy_decimals: 1
     cs_pin: D3
     reference_resistance: 430 Ω
     rtd_nominal_resistance: 100 Ω
     rtd_wires: 3
-    update_interval: 60s
+    update_interval: 30s
     mains_filter: 50HZ
     filters:
-      - median
+    - median:
+        window_size: 4
+        send_every: 2
+        send_first_at: 2
     
 font:
   - file: fonts/materialdesignicons-webfont.ttf
