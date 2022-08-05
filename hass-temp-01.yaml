@@ -9,7 +9,6 @@ esphome:
 
 packages:
   mqtt: !include packages/common/mqtt.yaml
-#  ota: !include packages/common/ota.yaml
   sensors: !include packages/common/sensors.yaml
   text_sensor: !include packages/common/text_sensors.yaml
   binary_sensors: !include packages/common/binary_sensors.yaml
@@ -30,7 +29,6 @@ wifi:
   ssid: !secret wifi_ssid_lexit
   password: !secret wifi_password_lexit
 
-
 binary_sensor:
 - platform: gpio
   name: ${friendly_name} Button
@@ -45,7 +43,6 @@ sensor:
 - platform: dallas
   name: "${friendly_name} Temperature"
   index: 0
-#  address: '0x610317037429ff28'
   filters:
     - median:
         window_size: 4
