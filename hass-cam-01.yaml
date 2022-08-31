@@ -1,0 +1,33 @@
+substitutions:
+  name: hass-cam-01
+  friendly_name: Camera 01
+  comment: M5Stack Timer Camera
+  board: m5stack-timer-cam
+
+packages:
+  common: !include packages/common-32.yaml
+  
+status_led:
+  pin:
+    number: GPIO2
+
+esp32_camera:
+  external_clock:
+    pin: GPIO27
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO25
+    scl: GPIO23
+  data_pins: [GPIO32, GPIO35, GPIO34, GPIO5, GPIO39, GPIO18, GPIO36, GPIO19]
+  vsync_pin: GPIO22
+  href_pin: GPIO26
+  pixel_clock_pin: GPIO21
+  reset_pin: GPIO15
+
+  id: cam  
+  name: ${friendly_name}
+  max_framerate: 1fps
+  saturation: -2
+  contrast: 2
+  brightness: 0
+  resolution: XGA
