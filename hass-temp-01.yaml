@@ -10,6 +10,7 @@ esphome:
 packages:
   mqtt: !include packages/common/mqtt.yaml
   sensors: !include packages/common/sensors.yaml
+  ota: !include packages/common/ota.yaml
   text_sensor: !include packages/common/text_sensors.yaml
   binary_sensors: !include packages/common/binary_sensors.yaml
   logger: !include packages/common/logger.yaml
