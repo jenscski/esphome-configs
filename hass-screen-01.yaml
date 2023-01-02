@@ -1,11 +1,15 @@
 substitutions:
   name: hass-screen-01
   friendly_name: Screen 01
-  comment: Adafruit HUZZAH32 – Sonos Screen Kontor
+  comment: Adafruit HUZZAH32 – Sonos Screen Stua
   board: featheresp32
 
 packages:
   common: !include packages/common-32.yaml
+
+status_led:
+  pin:
+    number: LED
 
 globals:
   - id: media_artist_x
@@ -190,7 +194,7 @@ font:
   - file: gfonts://Ubuntu@Regular
     size: 14
     id: f_media
-    glyphs: '!''&«»?#"%’^´()+•=,-_.:/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
+    glyphs: '÷!''&«»?#"%’^´()+•=,-_.:/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
   - file: gfonts://Azeret Mono@Medium
     id: f_clock
     size: 32
@@ -214,7 +218,7 @@ font:
 text_sensor:
   - platform: homeassistant
     id: media_artist
-    entity_id: sensor.media_artist_kontor
+    entity_id: sensor.media_artist_stua
     internal: true
     on_value:
       then:
@@ -226,7 +230,7 @@ text_sensor:
             value: '-1'
   - platform: homeassistant
     id: media_channel
-    entity_id: sensor.media_channel_kontor
+    entity_id: sensor.media_channel_stua
     internal: true
     on_value:
       then:
@@ -238,7 +242,7 @@ text_sensor:
             value: '-1'
   - platform: homeassistant
     id: media_title
-    entity_id: sensor.media_title_kontor
+    entity_id: sensor.media_title_stua
     internal: true
     on_value:
       then:
@@ -250,7 +254,7 @@ text_sensor:
             value: '-1'
   - platform: homeassistant
     id: media_album
-    entity_id: sensor.media_album_kontor
+    entity_id: sensor.media_album_stua
     internal: true
     on_value:
       then:
@@ -263,15 +267,15 @@ text_sensor:
 sensor:
   - platform: homeassistant
     id: media_volume
-    entity_id: sensor.media_volume_kontor
+    entity_id: sensor.media_volume_stua
     internal: true
 
 binary_sensor:
   - platform: homeassistant
     id: media_playing
-    entity_id: sensor.media_playing_kontor
+    entity_id: sensor.media_playing_stua
     internal: true
   - platform: homeassistant
     id: media_muted
-    entity_id: sensor.media_muted_kontor
+    entity_id: sensor.media_muted_stua
     internal: true

@@ -46,3 +46,12 @@ interval:
 #  - interval: 1h
 #    then:
 #      - ds1307.write_time
+
+button:
+  - platform: wake_on_lan
+    name: "Start NAS"
+    target_mac_address: 00:11:32:b4:00:56
+
+  - platform: wake_on_lan
+    name: "Start PC"
+    target_mac_address: 1c:69:7a:66:9e:c9
