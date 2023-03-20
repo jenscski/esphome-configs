@@ -1,7 +1,7 @@
 substitutions:
   name: hass-temp-02
   friendly_name: Temperature 02
-  comment: esp32dev - MQTT - TMP117
+  comment: Adafruit QT Py ESP32S2 - MQTT - TMP117
 
 esphome:
   name: ${name}
@@ -17,7 +17,7 @@ packages:
   buttons: !include packages/common/buttons.yaml
 
 esp32:
-  board: esp32dev
+  board: adafruit_qtpy_esp32s2
 
 wifi:
   fast_connect: true
@@ -29,8 +29,8 @@ wifi:
 i2c:
   frequency: 800kHz
   scan: true
-  sda: 22
-  scl: 19
+  sda: SDA1
+  scl: SCL1
 
 sensor:
 - platform: tmp117
