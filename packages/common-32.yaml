@@ -4,9 +4,9 @@ substitutions:
 esp32:
   board: ${board}
   framework:
-    type: arduino
-    version: 2.0.6
-    platform_version: 5.3.0
+    type: esp-idf
+    version: 5.3.0
+    platform_version: 6.8.1
 
 packages:
   base: !include common-base.yaml

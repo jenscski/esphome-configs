@@ -3,8 +3,6 @@ substitutions:
 
 esp8266:
   board: "${board}"
-  framework:
-    platform_version: 4.0.1
 
 status_led:
   pin:
