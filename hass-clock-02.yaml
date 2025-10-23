@@ -1,14 +1,11 @@
 substitutions:
-  name: hass-clock-01
-  friendly_name: "Clock #1"
-  comment: NodeMCU - Clock
-  board: nodemcuv2
+  name: hass-clock-02
+  friendly_name: "Clock #2"
+  comment: ATOM Lite ESP32 - Clock
+  board: m5stack-atom
 
 packages:
-  common: !include packages/common-8266.yaml
-  
-esp8266:
-  restore_from_flash: true
+  common: !include packages/common-32-api.yaml
   
 number:
   - platform: template
@@ -23,24 +20,18 @@ number:
     restore_value: true
 
 uart:
-  tx_pin: D8
+  tx_pin: GPIO26
   baud_rate: 9600
   
-#i2c:
-  
-#time:
-#  - platform: ds1307
-#  - platform: sntp
-    
-# Example configuration entry
 interval:
   - interval: 1s
     then:
       - uart.write: !lambda
-          return {0x7a, (byte)id(brightness).state};
+          auto b = id(brightness).state;
+          return {(uint8_t)0x7a, (uint8_t)b};
       - uart.write: [0x77, 0x02]
       - uart.write: [0x79, 0x00]
       - uart.write: !lambda
           auto s = id(hass_time).now().strftime("%H%M");
-          return std::vector<unsigned char>( s.begin(), s.end() );
+          return std::vector<uint8_t>( s.begin(), s.end() );
           

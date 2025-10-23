@@ -10,4 +10,4 @@ status_led:
     inverted: true
 
 packages:
-  base: !include common-base.yaml
+  base: !include common-base-api.yaml

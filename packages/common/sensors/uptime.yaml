@@ -1,5 +1,5 @@
 ---
 platform: uptime
-name: "${friendly_name} Uptime"
+name: "Uptime"
 id: uptime_sensor
 device_class: duration

@@ -1,8 +1,8 @@
 ---
 platform: wifi_info
 ip_address:
-    name: "${friendly_name} IP Address"
-    id: wifi_info_ip_address_sensor
+    name: "IP Address"
+#    id: wifi_info_ip_address_sensor
 ssid:
-    name: ${friendly_name} SSID
-    id: wifi_info_ssid_sensor
+    name: SSID
+#    id: wifi_info_ssid_sensor

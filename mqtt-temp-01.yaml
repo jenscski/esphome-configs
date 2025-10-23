@@ -1,0 +1,52 @@
+substitutions:
+  name: mqtt-temp-01
+  friendly_name: "[MQTT] Jobb #1"
+  comment: NodeMCU - MQTT - DS18B20
+  board: nodemcuv2
+
+packages:
+  common: !include packages/common-8266.yaml
+  mqtt: !include packages/common/mqtt.yaml
+
+api: !remove
+time: !remove
+
+mqtt:
+  discovery_unique_id_generator: mac
+
+esp8266:
+  restore_from_flash: true
+
+one_wire:
+  - platform: gpio
+    pin: D4
+
+wifi:
+  fast_connect: true
+  ssid: !secret wifi_ssid_lexit
+  password: !secret wifi_password_lexit
+
+binary_sensor:
+- platform: gpio
+  name: Button
+  pin:
+    number: D3
+    inverted: true
+    mode:
+      input: true
+      pullup: true
+
+sensor:
+- platform: dallas_temp
+  name: "Temperature"
+#  index: 0
+  filters:
+    - median:
+        window_size: 4
+        send_every: 2
+        send_first_at: 2
+
+status_led:
+  pin:
+    number: LED
+    inverted: true

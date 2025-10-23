@@ -1,11 +1,16 @@
 substitutions:
   name: hass-screen-01
-  friendly_name: Screen 01
+  friendly_name: "Screen #1"
   comment: Adafruit HUZZAH32 – Sonos Screen Stua
   board: featheresp32
 
 packages:
-  common: !include packages/common-32.yaml
+  common: !include packages/common-32-api.yaml
+
+esp32:
+  framework:
+    sdkconfig_options:
+      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
 
 status_led:
   pin:
@@ -39,6 +44,7 @@ globals:
 
 external_components:
   - source: github://jenscski/esphome-components@main
+    refresh: 1h
     components: [ sh1107_base, sh1107_i2c ]
 
 i2c:
@@ -193,24 +199,29 @@ display:
 font:
   - file: gfonts://Ubuntu@Regular
     size: 14
+    bpp: 2
     id: f_media
-    glyphs: '÷!''&«»?#"%’^´()+•=,-_.:/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
+    glyphs: '÷!''&«»?#"%’^´()+•=,-_.:/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
   - file: gfonts://Azeret Mono@Medium
     id: f_clock
     size: 32
+    bpp: 2
     glyphs: '0123456789:'
   - file: gfonts://Azeret Mono@Light
     id: f_clock_small
     size: 12
+    bpp: 2
     glyphs: '0123456789:'
   - file: fonts/materialdesignicons-webfont.ttf
     size: 12
+    bpp: 2
     id: f_mdi_12
     glyphs:
       - "\U000F057E" # mdi-volume-high
       - "\U000F0581" # mdi-volume-off
   - file: fonts/materialdesignicons-webfont.ttf
     size: 64
+    bpp: 2
     id: f_mdi_64
     glyphs:
       - "\U000F0C5F" # mdi-close-network-outline

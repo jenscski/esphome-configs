@@ -1,0 +1,37 @@
+esphome:
+  name: test-atom-ap
+  comment: ATOM Lite ESP32
+  friendly_name: '[Test] ATOM Lite ESP32 Ap'
+
+esp32:
+  board: m5stack-atom
+  flash_size: 4MB
+  framework:
+    type: esp-idf
+    version: 5.3.0
+    platform_version: platformio/espressif32@6.8.1
+
+logger:
+  logs:
+    esp-idf: INFO
+
+wifi:
+  ap:
+    ssid: "atom-lite-master"
+    manual_ip:
+      static_ip: 192.168.0.1
+      gateway: 192.168.0.1
+      subnet: 255.255.255.0
+
+web_server:
+  local: True
+
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    pin: GPIO27
+    num_leds: 1
+    rmt_channel: 0
+    chipset: SK6812
+    id: status_led
+    name: Light

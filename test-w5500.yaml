@@ -1,0 +1,125 @@
+substitutions: 
+  board: m5stack-atoms3
+  name: test-w5500
+  friendly_name: test-w5500
+  comment: m5stack-atoms3
+
+esphome:
+  name: ${name}
+  comment: ${comment}
+  friendly_name: ${friendly_name}
+
+packages:
+  common: !include packages/common-32.yaml
+#  sensors: !include packages/common/sensors.yaml
+#  text_sensor: !include packages/common/text_sensors.yaml
+  binary_sensors: !include packages/common/binary_sensors.yaml
+  logger: !include packages/common/logger.yaml
+  switches: !include packages/common/switches.yaml
+  buttons: !include packages/common/buttons.yaml  
+
+sensor:
+  - platform: uptime
+    name: "Uptime"
+    id: uptime_sensor
+    device_class: duration
+
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery_unique_id_generator: mac
+
+esp32:
+  variant: ESP32S3
+  flash_size: 8MB
+  framework:
+    sdkconfig_options:
+#      COMPILER_OPTIMIZATION_SIZE: y
+      CONFIG_ESPTOOLPY_FLASHSIZE_8MB: y
+
+ethernet:
+  type: W5500
+  clk_pin: GPIO05
+  cs_pin: GPIO06
+  miso_pin: GPIO07
+  mosi_pin: GPIO08
+
+switch:
+  - platform: gpio
+    pin: 16
+    name: "Backlight"
+    id: backlight
+    restore_mode: ALWAYS_ON
+
+spi:
+  clk_pin: GPIO17
+  mosi_pin: GPIO21
+  interface: spi3
+
+display:
+  - platform: ili9xxx
+    id: my_display
+    update_interval: 1s
+    model: ST7789V
+    cs_pin: 15
+    dc_pin: 33
+    reset_pin: 34
+    rotation: 180
+    invert_colors: true
+    auto_clear_enabled: False
+    dimensions:
+      height: 128
+      width: 128
+      offset_height: 1
+      offset_width: 2
+
+lvgl:
+  pages:
+    - id: main_page
+      widgets:
+      - label:
+          align: CENTER
+          id: fld_temperature
+          text_font: f_temperature
+          text: "--.--°"
+      - label:
+          id: fld_clock
+          align: BOTTOM_MID
+          text_font: f_clock
+          text: "--:--:--"
+
+time:
+  - platform: sntp
+    id: time_comp
+    on_time_sync:
+      - lvgl.label.update:
+          id: fld_clock
+          text:
+            time_format: "%H.%M.%S"
+    on_time:
+      - seconds: '*'
+        then:
+          - lvgl.label.update:
+              id: fld_clock
+              text:
+                time_format: "%H.%M.%S"
+
+font:
+  - file: fonts/materialdesignicons-webfont.ttf
+    id: f_mdi
+    bpp: 4
+    size: 16
+    glyphs:
+      - "\U000F0C5F" # mdi-close-network-outline
+      - "\U000F0C54" # mdi-check-network-outline
+  - file: gfonts://Azeret Mono@Medium
+    id: f_clock
+    bpp: 4
+    size: 24
+    glyphs: '-0123456789:.'
+  - file: gfonts://Azeret Mono@Medium
+    id: f_temperature
+    bpp: 4
+    size: 32
+    glyphs: -0123456789.°

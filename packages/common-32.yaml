@@ -1,19 +1,24 @@
 ---
 substitutions:
 
+#external_components:
+#  - source: github://jenscski/esphome@esp32
+#    refresh: 1s
+#    components: [ esp32 ]
+
 esp32:
   board: ${board}
   framework:
     type: esp-idf
-    version: 5.3.0
-    platform_version: 6.8.1
-
-packages:
-  base: !include common-base.yaml
+    version: latest
+#    version: 5.5.1
+#    platform_version: 55.03.32
+#    version: 5.3.1
+#    platform_version: 6.9.0
 
 sensor:
   - platform: template
-    name: "${friendly_name} Free heap"
+    name: "Free heap"
     lambda: return heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
     icon: "mdi:memory"
     entity_category: diagnostic

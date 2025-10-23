@@ -1,0 +1,184 @@
+#https://docs.m5stack.com/en/core/AtomS3%20Lite
+substitutions:
+  name: hass-atoms3-01
+  friendly_name: "#1 hasss-atoms3-01"
+  comment: ATOMS3 Dev Kit w/ 0.85-inch Screen
+  board: m5stack-atoms3
+
+esp32:
+  variant: esp32s3
+  flash_size: 8MB
+  framework:
+    type: esp-idf
+    version: 5.3.0
+    platform_version: 6.8.1
+    sdkconfig_options:
+      COMPILER_OPTIMIZATION_SIZE: y
+      CONFIG_ESPTOOLPY_FLASHSIZE_8MB: y
+
+packages:
+  common: !include packages/common-32.yaml
+
+ota:
+   - platform: esphome
+     on_begin:
+      then:
+        - display.page.show: p_ota
+        - component.update: my_display
+
+#i2c:
+#  - id: bus_a
+#    sda: GPIO38
+#    scl: GPIO39
+
+spi:
+  clk_pin: GPIO17
+  mosi_pin: GPIO21
+
+color:
+  - id: my_red
+    red: 100%
+    green: 0%
+    blue: 0%
+  - id: my_yellow
+    red: 100%
+    green: 100%
+    blue: 0%
+  - id: my_green
+    red: 0%
+    green: 100%
+    blue: 0%
+  - id: my_blue
+    red: 0%
+    green: 0%
+    blue: 100%
+  - id: my_gray_50
+    red: 50%
+    green: 50%
+    blue: 50%
+  - id: my_gray_75
+    red: 75%
+    green: 75%
+    blue: 75%
+
+image:
+  - file: 'lilje2.png'
+    id: my_image
+    type: RGBA
+
+font:
+  - file: "gfonts://Roboto"
+    id: roboto_36
+    size: 36
+    glyphs: '-0123456789.°OTA'
+  - file: "gfonts://Roboto"
+    id: roboto_32
+    size: 24
+    glyphs: '0123456789:Ute'
+  - file: fonts/materialdesignicons-webfont.ttf
+    size: 128
+    id: f_mdi_64
+    glyphs:
+      - "\U000F0C5F" # mdi-close-network-outline
+
+switch:
+  - platform: gpio
+    pin: 16
+    name: "Backlight"
+    id: backlight
+    restore_mode: ALWAYS_ON
+
+sensor:
+  - platform: homeassistant
+    id: temperature
+    entity_id: sensor.outdoor_01_temperature
+    internal: true
+
+graph:
+  - id: single_temperature_graph
+    width: 128
+    height: 64
+    duration: 6h
+    traces: 
+      - sensor: temperature
+        line_type: DASHED
+        line_thickness: 1
+        color: my_red
+
+display:
+  - platform: ili9xxx
+    id: my_display
+    model: ST7789V
+    cs_pin: 15
+    dc_pin: 33
+    reset_pin: 34
+    rotation: 180
+    invert_colors: true
+    update_interval: 1s
+    dimensions:
+      height: 128
+      width: 128
+      offset_height: 1
+      offset_width: 2
+    pages:
+      - id: page1
+        lambda: |-
+          //if(!id(system_status).state)
+          //{
+          //  it.print(128/2, 128/2, id(f_mdi_64), id(my_gray_50), TextAlign::CENTER, "\U000F0C5F");
+          //}
+          //else
+          //{
+          //  //it.rectangle(0,  0, it.get_width(), it.get_height(), id(my_blue));
+          //  
+          //  it.print(128/2 , 0, id(roboto_32), id(my_gray_50), TextAlign::TOP_CENTER, "Ute");
+          //  it.strftime((128 / 2), 128, id(roboto_32), id(my_gray_50), TextAlign::BOTTOM_CENTER, "%H:%M:%S", id(hass_time).now());
+          //
+          //  if(isnan(id(temperature).state)) {
+          //    it.print(128/2 , 128 / 2, id(roboto_36), id(my_gray_75), TextAlign::CENTER, "--.-°");
+          //  } else {
+          //    it.printf(128/2, 128 / 2, id(roboto_36), id(my_gray_75), TextAlign::CENTER, "%.1f°", id(temperature).state);
+          //  } 
+          //}
+
+          it.image(0, 0, id(my_image));
+      - id: p_ota
+        lambda: |-
+          it.print(128/2 , 128 / 2, id(roboto_36), TextAlign::CENTER, "OTA");
+    
+#G41=Button
+binary_sensor:
+  - platform: gpio
+    name: Button
+    pin:
+      number: GPIO41
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    filters:
+      - delayed_on_off: 10ms
+    on_multi_click:
+      - timing:
+          - ON for at most 1s
+          - OFF for at most 1s
+          - ON for at most 1s
+          - OFF for at least 0.2s
+        then:
+          - logger.log: "Double Clicked"
+      - timing:
+          - ON for 1s to 2s
+          - OFF for at least 0.5s
+        then:
+          - logger.log: "Single Long Clicked"
+      - timing:
+          - ON for at most 1s
+          - OFF for at least 0.5s
+        then:
+          - logger.log: "Single Short Clicked"
+#    on_press:
+#      then:
+#        - display.page.show_next: my_display
+#        - logger.log: Button Pressed
+#        - switch.toggle: backlight
+#        - light.toggle: backlight

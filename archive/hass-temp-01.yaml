@@ -1,11 +1,12 @@
 substitutions:
   name: hass-temp-01
-  friendly_name: Temperature 01
+  friendly_name: Jobb 01
   comment: NodeMCU - MQTT - DS18B20
 
 esphome:
   name: ${name}
   comment: ${comment}
+  friendly_name: ${friendly_name}
 
 packages:
   mqtt: !include packages/common/mqtt.yaml
@@ -19,11 +20,18 @@ packages:
 esp8266:
   board: nodemcuv2
   restore_from_flash: true
-  framework:
-    platform_version: 4.0.1
   
-dallas:
-  - pin: D4
+one_wire:
+  - platform: gpio
+    pin: D4
+
+http_request:
+  useragent: esphome/device
+  verify_ssl: false
+  timeout: 10s
+
+ota:
+  - platform: http_request
 
 wifi:
   fast_connect: true
@@ -32,7 +40,7 @@ wifi:
 
 binary_sensor:
 - platform: gpio
-  name: ${friendly_name} Button
+  name: Button
   pin:
     number: D3
     inverted: true
@@ -41,9 +49,9 @@ binary_sensor:
       pullup: true
 
 sensor:
-- platform: dallas
-  name: "${friendly_name} Temperature"
-  index: 0
+- platform: dallas_temp
+  name: "Temperature"
+#  index: 0
   filters:
     - median:
         window_size: 4
@@ -54,3 +62,13 @@ status_led:
   pin:
     number: LED
     inverted: true
+
+button:
+  - platform: template
+    name: "Firmware update"
+    on_press:
+      then:
+        - ota.http_request.flash:
+            md5_url: https://ota.skibakk.net/hass-temp-01.md5
+            url: https://ota.skibakk.net/hass-temp-01.bin
+        - logger.log: "This message should be not displayed(reboot)"

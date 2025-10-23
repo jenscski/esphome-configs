@@ -1,0 +1,6 @@
+---
+substitutions:
+
+packages:
+  common: !include common-32.yaml
+  base: !include common-base-mqtt.yaml

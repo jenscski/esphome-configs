@@ -1,12 +1,17 @@
 substitutions:
   name: hass-screen-02
-  friendly_name: Screen 02
+  friendly_name: "Screen #2"
   comment: Adafruit HUZZAH32 – Sonos Screen Kjøkken
   board: featheresp32
 
 packages:
-  common: !include packages/common-32.yaml
+  common: !include packages/common-32-api.yaml
   
+esp32:
+  framework:
+    sdkconfig_options:
+      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
+
 status_led:
   pin:
     number: LED
@@ -49,7 +54,7 @@ display:
   - platform: sh1107_i2c
     model: SH1107 64X128
     id: my_display
-    rotation: 90
+    rotation: 270
     contrast: 1%
     update_interval: 150ms
     pages:
@@ -193,24 +198,29 @@ display:
 font:
   - file: gfonts://Ubuntu@Regular
     size: 14
+    bpp: 2
     id: f_media
-    glyphs: '÷!''&«»?#"%’^´()+•=,-_.:/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřẞßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
+    glyphs: '÷!''&«»?#"%’^´()+•=,-_.:\/°0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz¡¿·ÄäÀàÁáÂâÃãÅåǍǎĄąĂăÆæĀāÇçĆćĈĉČčĎđĐďðÈèÉéÊêËëĚěĘęĖėĒēĜĝĢģĞğĤĥÌìÍíÎîÏïıĪīĮįĴĵĶķĹĺĻļŁłĽľĿŀÑñŃńŇňŅņÖöÒòÓóÔôÕõŐőØøŒœŔŕŘřßŚśŜŝŞşŠšȘșŤťŢţÞþȚțÜüÙùÚúÛûŰűŨũŲųŮůŪūŴŵÝýŸÿŶŷŹźŽžŻż'
   - file: gfonts://Azeret Mono@Medium
     id: f_clock
     size: 32
+    bpp: 2
     glyphs: '0123456789:'
   - file: gfonts://Azeret Mono@Light
     id: f_clock_small
     size: 12
+    bpp: 2
     glyphs: '0123456789:'
   - file: fonts/materialdesignicons-webfont.ttf
     size: 12
+    bpp: 2
     id: f_mdi_12
     glyphs:
       - "\U000F057E" # mdi-volume-high
       - "\U000F0581" # mdi-volume-off
   - file: fonts/materialdesignicons-webfont.ttf
     size: 64
+    bpp: 2
     id: f_mdi_64
     glyphs:
       - "\U000F0C5F" # mdi-close-network-outline
@@ -218,7 +228,7 @@ font:
 text_sensor:
   - platform: homeassistant
     id: media_artist
-    entity_id: sensor.media_artist_kjokken
+    entity_id: sensor.sonos_kjokken_artist
     internal: true
     on_value:
       then:
@@ -230,7 +240,7 @@ text_sensor:
             value: '-1'
   - platform: homeassistant
     id: media_channel
-    entity_id: sensor.media_channel_kjokken
+    entity_id: sensor.sonos_kjokken_channel
     internal: true
     on_value:
       then:
@@ -242,7 +252,7 @@ text_sensor:
             value: '-1'
   - platform: homeassistant
     id: media_title
-    entity_id: sensor.media_title_kjokken
+    entity_id: sensor.sonos_kjokken_title
     internal: true
     on_value:
       then:
@@ -254,7 +264,7 @@ text_sensor:
             value: '-1'
   - platform: homeassistant
     id: media_album
-    entity_id: sensor.media_album_kjokken
+    entity_id: sensor.sonos_kjokken_album
     internal: true
     on_value:
       then:
@@ -267,15 +277,15 @@ text_sensor:
 sensor:
   - platform: homeassistant
     id: media_volume
-    entity_id: sensor.media_volume_kjokken
+    entity_id: sensor.sonos_kjokken_volume
     internal: true
 
 binary_sensor:
   - platform: homeassistant
     id: media_playing
-    entity_id: sensor.media_playing_kjokken
+    entity_id: binary_sensor.sonos_kjokken_playing
     internal: true
   - platform: homeassistant
     id: media_muted
-    entity_id: sensor.media_muted_kjokken
+    entity_id: binary_sensor.sonos_kjokken_muted
     internal: true

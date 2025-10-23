@@ -1,6 +1,6 @@
 substitutions:
   name: hass-outdoor-temp-01
-  friendly_name: Outdoor 01
+  friendly_name: "Outdoor #1"
   board: d1_mini
   comment: D1 Mini - PT100 - OLED
 
@@ -15,7 +15,7 @@ spi:
 sensor:
   - platform: max31865
     id: temperature
-    name:  "${friendly_name} Temperature"
+    name:  Temperature
     accuracy_decimals: 1
     cs_pin: D3
     reference_resistance: 430 Ω

@@ -1,0 +1,67 @@
+substitutions:
+  name: hass-atoms3-test-01
+  friendly_name: AtomS3 Lite ESP32S3 Dev Kit Testing
+  comment: AtomS3 Lite ESP32S3 Dev Kit
+  board: m5stack-atoms3
+
+packages:
+  common: !include packages/common-32-api.yaml
+
+esp32:
+  flash_size: 8MB
+  variant: ESP32S3
+  framework:
+    sdkconfig_options:
+      COMPILER_OPTIMIZATION_SIZE: y
+      CONFIG_ESPTOOLPY_FLASHSIZE_8MB: y
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO41
+      inverted: true
+    name: Button
+
+output:
+  - platform: ledc
+    pin: GPIO16
+    id: backlight_pwm
+
+# Define a monochromatic, dimmable light for the backlight
+light:
+  - platform: monochromatic
+    output: backlight_pwm
+    name: "Display Backlight"
+    id: back_light
+    restore_mode: ALWAYS_ON
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    pin: GPIO35
+    num_leds: 1
+    chipset: SK6812
+    id: status_led
+    name: Light
+    effects:
+      - random:
+      - flicker:
+      - addressable_rainbow:
+
+spi:
+  clk_pin: 17
+  mosi_pin: 21
+
+display:
+  - platform: ili9xxx
+    model: ST7789V
+    id: display_tft
+    dimensions:
+      height: 128
+      width: 128
+      offset_height: 1
+      offset_width: 2
+    invert_colors: true
+    rotation: 180
+    cs_pin: 15
+    dc_pin: 33
+    reset_pin: 34
+    show_test_card: true

@@ -1,0 +1,36 @@
+substitutions:
+  name: hass-bt-proxy-01
+  friendly_name: "Bluetooth Proxy #1"
+  comment: AtomS3U ESP32S3 Development Kit with USB-A
+  board: m5stack-atoms3
+
+packages:
+  common: !include packages/common-32-api.yaml
+
+external_components:
+  - source: github://bendikwa/esphome-igrill@v1.2
+
+esp32:
+  flash_size: 8MB
+  variant: ESP32S3
+  framework:
+    sdkconfig_options:
+      COMPILER_OPTIMIZATION_SIZE: y
+      CONFIG_ESPTOOLPY_FLASHSIZE_8MB: y
+
+esp32_ble_tracker:
+  scan_parameters:
+    active: true
+
+bluetooth_proxy:
+  active: true
+
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    pin: GPIO35
+    num_leds: 1
+    chipset: SK6812
+    id: status_led
+    name: Light
+    restore_mode: ALWAYS_OFF

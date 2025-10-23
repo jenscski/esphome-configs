@@ -1,0 +1,44 @@
+substitutions: 
+  board: m5stack-atom
+  name: test-w5500-atom-lite
+  friendly_name: test-w5500-atom-lite
+
+esphome:
+  name: ${name}
+  comment: ${comment}
+  friendly_name: ${friendly_name}
+
+packages:
+  common: !include packages/common-32.yaml
+#  sensors: !include packages/common/sensors.yaml
+#  text_sensor: !include packages/common/text_sensors.yaml
+  binary_sensors: !include packages/common/binary_sensors.yaml
+  logger: !include packages/common/logger.yaml
+  switches: !include packages/common/switches.yaml
+  buttons: !include packages/common/buttons.yaml  
+
+sensor:
+  - platform: uptime
+    name: "Uptime"
+    id: uptime_sensor
+    device_class: duration
+
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery_unique_id_generator: mac
+
+esp32:
+  flash_size: 4MB
+  framework:
+    sdkconfig_options:
+#      COMPILER_OPTIMIZATION_SIZE: y
+      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
+
+ethernet:
+  type: W5500
+  clk_pin: GPIO22
+  cs_pin: GPIO19
+  miso_pin: GPIO23
+  mosi_pin: GPIO33

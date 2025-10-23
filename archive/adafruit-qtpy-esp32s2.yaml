@@ -1,0 +1,44 @@
+substitutions:
+  name: adafruit-qtpy-esp32s2
+  friendly_name: adafruit-qtpy-esp32s2
+  comment: Adafruit QT Py ESP32-S2
+  board: adafruit_qtpy_esp32s2
+
+esphome:
+  name: adafruit-qtpy-esp32s2
+  on_boot:
+    - light.turn_on:
+        id: status_led
+        brightness: 25%
+        red: 1
+        green: 0
+        blue: 0
+    - delay: 2s
+    - light.turn_on:
+        id: status_led
+        brightness: 25%
+        red: 0
+        green: 1
+        blue: 0
+
+packages:
+  common: !include packages/common-32.yaml
+
+switch:
+  - platform: gpio
+    name: "NeoPixel Power"
+#    internal: true
+    pin: NEOPIXEL_POWER
+    restore_mode: ALWAYS_ON
+
+light:
+  - platform: esp32_rmt_led_strip
+    name: "NeoPixel Light"
+#    internal: true
+    id: status_led
+    rgb_order: GRB
+    chipset: WS2812
+    pin: PIN_NEOPIXEL
+    num_leds: 1
+    rmt_channel: 0
+    

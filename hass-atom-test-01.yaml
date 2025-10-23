@@ -1,0 +1,34 @@
+substitutions:
+  name: hass-atom-test-01
+  friendly_name: "Atom Lite Test #1"
+  comment: Atom Lite Testing
+  board: m5stack-atom
+
+packages:
+  common: !include packages/common-32-api.yaml
+
+esp32:
+  flash_size: 4MB
+  framework:
+    sdkconfig_options:
+      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO39
+      inverted: true
+    name: Button
+
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    pin: GPIO27
+    num_leds: 1
+    chipset: SK6812
+    id: status_led
+    name: Light
+    effects:
+      - random:
+      - flicker:
+      - addressable_rainbow:
