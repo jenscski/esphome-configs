@@ -19,15 +19,132 @@ esp32:
       CONFIG_SPIRAM_FETCH_INSTRUCTIONS: y
       CONFIG_SPIRAM_RODATA: y
 
+wifi:
+  use_address: 192.168.30.21
+
 api:
   on_client_connected:
-    - lvgl.widget.hide: boot_screen
+    - lvgl.widget.show: lbl_hastatus
     - logger.log:
         format: "Client %s connected to API with IP %s"
         args: ["client_info.c_str()", "client_address.c_str()"]
   on_client_disconnected:
-    - lvgl.widget.show: boot_screen
-    - logger.log: "API client disconnected!"
+    then:
+      - if:
+          condition:
+            not:
+              api.connected:
+          then:
+            - lvgl.widget.hide: lbl_hastatus
+
+time:
+  - platform: homeassistant
+    id: !extend hass_time
+    on_time_sync:
+      - script.execute: time_update
+    on_time:
+      - minutes: '*'
+        seconds: 0
+        then:
+          - script.execute: time_update
+
+script:
+  - id: time_update
+    then:
+      - lvgl.label.update:
+          id: lbl_clock
+          text: !lambda |-
+            return id(hass_time).now().strftime("%H:%M").c_str();
+
+sensor:
+  - platform: homeassistant
+    id: temperature_outdoor
+    entity_id: sensor.hass_outdoor_temp_01_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_outdoor
+          text:
+            format: "%.1f°C"
+            args: [ 'x' ]
+  - platform: homeassistant
+    id: temperature_kitchen
+    entity_id: sensor.kjokken_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_kitchen
+          text:
+            format: "%.1f°C"
+            args: [ 'x' ]
+
+text_sensor:
+  - platform: homeassistant
+    id: light_martin
+    entity_id: light.silicon_labs_ezsp_martin_taklys
+    internal: true
+    on_value:
+      - logger.log:
+          format: "Changed: %s"
+          args: [ 'x' ]
+      - lvgl.label.update:
+          id: lbl_lightbulb_martin
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"on"}));
+          text: !lambda |-
+            static char buf[10];
+            std::string icon;
+            if (0 == x.compare(std::string{"on"})) {
+                icon = "\U000F0335";
+            } else {
+                icon = "\U000F0336";
+            }
+            snprintf(buf, sizeof(buf), "%s", icon.c_str());
+            return buf;
+  - platform: homeassistant
+    id: light_eivind
+    entity_id: light.eivind_taklys_light
+    internal: true
+    on_value:
+      - logger.log:
+          format: "Changed: %s"
+          args: [ 'x' ]
+      - lvgl.label.update:
+          id: lbl_lightbulb_eivind
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"on"}));
+          text: !lambda |-
+            static char buf[10];
+            std::string icon;
+            if (0 == x.compare(std::string{"on"})) {
+                icon = "\U000F0335";
+            } else {
+                icon = "\U000F0336";
+            }
+            snprintf(buf, sizeof(buf), "%s", icon.c_str());
+            return buf;
+  - platform: homeassistant
+    id: light_kitchen
+    entity_id: light.kjokken_powerplugg_1_switch
+    internal: true
+    on_value:
+      - logger.log:
+          format: "Changed: %s"
+          args: [ 'x' ]
+      - lvgl.label.update:
+          id: lbl_lightbulb_kitchen
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"on"}));
+          text: !lambda |-
+            static char buf[10];
+            std::string icon;
+            if (0 == x.compare(std::string{"on"})) {
+                icon = "\U000F0335";
+            } else {
+                icon = "\U000F0336";
+            }
+            snprintf(buf, sizeof(buf), "%s", icon.c_str());
+            return buf;
 
 psram:
   mode: octal
@@ -120,13 +237,6 @@ touchscreen:
   transform:
     mirror_x: true
     mirror_y: true
-  on_release:
-    - if:
-        condition: lvgl.is_paused
-        then:
-          - lvgl.resume:
-          - lvgl.widget.redraw:
-          - light.turn_on: backlight
 
 # Basic Config
 image:
@@ -135,13 +245,23 @@ image:
     resize: 200x200
     type: RGB565
     transparency: alpha_channel
+  - file: bg.jpg
+    id: img_bg
+    type: RGB565
 
 lvgl:
-  on_idle:
-    timeout: !lambda "return 10000;"
-    then:
-      - light.turn_off: backlight
-      - lvgl.pause:
+  disp_bg_image: img_bg
+  theme:
+    button:
+      bg_color: 0x444444
+      shadow_width: 0
+      border_opa: COVER
+      border_width: 1
+      border_color: 0x666666
+    obj:
+      border_opa: COVER
+      border_width: 1
+      border_color: 0x666666
   style_definitions:
     - id: header_footer
       bg_color: 0x2F8CD8
@@ -159,43 +279,149 @@ lvgl:
       height: 30
   top_layer:
     widgets:
-      - obj:
-          id: boot_screen
-          x: 0
-          y: 0
-          width: 100%
-          height: 100%
-          bg_color: 0xffffff
-          bg_opa: COVER
-          radius: 0
-          pad_all: 0
-          border_width: 0
-          widgets:
-            - image:
-                align: CENTER
-                src: boot_logo
-                y: -40
-            - spinner:
-                align: CENTER
-                y: 95
-                height: 50
-                width: 50
-                spin_time: 1s
-                arc_length: 60deg
-                arc_width: 8
-                indicator:
-                  arc_color: 0x18bcf2
-                  arc_width: 8
+      - label:
+          id: lbl_clock
+          text: '--:--'
+          text_color: 0xffffff
+          text_font: f_24
+          x: 20
+          y: 20
+      - label:
+          text: "\uF1EB"
+          id: lbl_hastatus
+          align: top_right
+          text_font: montserrat_24 
+          x: -20
+          y: 20
+          text_align: right
+          text_color: 0xFFFFFF
+          hidden: true
   pages:
     - id: main_page
-      bg_color: 0x000000
+      bg_opa: TRANSP
       widgets:
         - obj:
-            align: TOP_MID
-            styles: header_footer
+            bg_opa: TRANSP
+            width: 210
+            height: SIZE_CONTENT
+            x: 20
+            y: 100
             widgets:
               - label:
-                  text: "ESPHome LVGL Display"
-                  align: CENTER
+                  text: 'Utendørs'
+                  text_font: f_24
+                  text_color: 0xffffff
+              - label:
+                  id: lbl_temperature_outdoor
+                  text: '--.-°C'
+                  width: 100%
                   text_align: CENTER
-                  text_color: 0xFFFFFF
+                  text_font: f_48
+                  text_color: 0xffffff
+                  y: 30
+        - obj:
+            bg_opa: TRANSP
+            width: 210
+            height: SIZE_CONTENT
+            x: 250
+            y: 100
+            widgets:
+              - label:
+                  text: 'Kjøkken'
+                  text_font: f_24
+                  text_color: 0xffffff
+              - label:
+                  id: lbl_temperature_kitchen
+                  text: '--.-°C'
+                  width: 100%
+                  text_align: CENTER
+                  text_font: f_48
+                  text_color: 0xffffff
+                  y: 30
+        - button:
+            x: 20
+            y: -20
+            width: 60
+            height: 60
+            align: BOTTOM_LEFT
+            id: btn_lightbulb_kitchen
+            widgets:
+              - label:
+                  id: lbl_lightbulb_kitchen
+                  align: CENTER
+                  text_font: mdi_42
+                  text: "\U000F0336" # mdi-lightbulb-outline
+                  text_color: 0xffffff    
+                  checked:
+                    text_color: 0xffea00
+            on_short_click:
+              - logger.log: 'Clicked'
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: light.kjokken_powerplugg_1_switch
+        - button:
+            x: 100
+            y: -20
+            width: 60
+            height: 60
+            align: BOTTOM_LEFT
+            id: btn_lightbulb_martin
+            widgets:
+              - label:
+                  id: lbl_lightbulb_martin
+                  align: CENTER
+                  text_font: mdi_42
+                  text: "\U000F0336" # mdi-lightbulb-outline
+                  text_color: 0xffffff    
+                  checked:
+                    text_color: 0xffea00
+            on_short_click:
+              - logger.log: 'Clicked'
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: light.silicon_labs_ezsp_martin_taklys
+        - button:
+            x: 180
+            y: -20
+            width: 60
+            height: 60
+            align: BOTTOM_LEFT
+            id: btn_lightbulb_eivind
+            widgets:
+              - label:
+                  id: lbl_lightbulb_eivind
+                  align: CENTER
+                  text_font: mdi_42
+                  text: "\U000F0336" # mdi-lightbulb-outline
+                  text_color: 0xffffff    
+                  checked:
+                    text_color: 0xffea00
+            on_short_click:
+              - logger.log: 'Clicked'
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: light.eivind_taklys_light
+font:
+  - file: gfonts://Montserrat@Medium
+    size: 24
+    bpp: 4
+    id: f_24
+    glyphsets:
+      - GF_Latin_Core
+  - file: gfonts://Montserrat@Medium
+    size: 48
+    bpp: 4
+    id: f_48
+    glyphsets:
+      - GF_Latin_Core
+  - file: "fonts/materialdesignicons-webfont.ttf"
+    id: mdi_42
+    size: 42
+    bpp: 4
+    glyphs: [
+      "\U000F0335", # mdi-lightbulb
+      "\U000F0336", # mdi-lightbulb-outline
+      ]
