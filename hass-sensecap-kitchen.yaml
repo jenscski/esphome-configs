@@ -2,25 +2,24 @@ substitutions:
   name: hass-sensecap-kitchen
   friendly_name: "SenseCAP Kitchen"
   comment: Seeed SenseCap D1 Indicator
-  board: esp32-s3-devkitc-1
+  glyphs: [
+      "\uf26c", # Tv
+      "\uf0eb", # Lightbulb
+      "\uf001", # Music
+      "\uf6a9", # volume-xmark
+      "\uf026", # volume-off
+      "\uf027", # volume-low
+      "\uf028", # volume-high
+      "\uf048", # backward-step
+      "\uf051", # forward-step
+    ]
 
 packages:
   common: !include packages/common-32-api.yaml
+  sensecap: !include packages/sensecap.yaml
 
-esp32:
-  variant: esp32s3
-  flash_size: 8MB
-  framework:
-    type: esp-idf
-    sdkconfig_options:
-      CONFIG_ESPTOOLPY_FLASHSIZE_8MB: y
-      CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: y
-      CONFIG_ESP32S3_DATA_CACHE_64KB: y
-      CONFIG_SPIRAM_FETCH_INSTRUCTIONS: y
-      CONFIG_SPIRAM_RODATA: y
-
-logger:
-  hardware_uart: UART0
+esphome:
+  build_path: "/config/esphome/.esphome/build/${name}"
 
 api:
   on_client_connected:
@@ -55,24 +54,29 @@ script:
 
 binary_sensor:
   - platform: gpio
-    name: Button
+    id: user_button
+    internal: true
     pin:
       number: GPIO38
       inverted: true
       mode:
         input: true
         pullup: true
-    on_click: 
-      then:
-        - lvgl.page.next
-  - platform: homeassistant
-    id: media_playing
-    entity_id: binary_sensor.sonos_kjokken_playing
-    internal: true
-  - platform: homeassistant
-    id: media_muted
-    entity_id: binary_sensor.sonos_kjokken_muted
-    internal: true
+  - platform: lvgl
+    widget: button1
+    name: 'Button #1'
+  - platform: lvgl
+    widget: button2
+    name: 'Button #2'
+  - platform: lvgl
+    widget: button3
+    name: 'Button #3'
+  - platform: lvgl
+    widget: button4
+    name: 'Button #4'
+  - platform: lvgl
+    widget: button5
+    name: 'Button #5'
 
 sensor:
   - platform: homeassistant
@@ -82,9 +86,10 @@ sensor:
     on_value:
       - lvgl.label.update:
           id: lbl_temperature_outdoor
-          text:
-            format: "%.1f°C"
-            args: [ 'x + .05' ]
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+#      - lvgl.label.update:
+#          id: lbl_temperature_outdoor_2
+#          text: !lambda return str_sprintf("%.1f°C", x).c_str();
   - platform: homeassistant
     id: temperature_kitchen
     entity_id: sensor.kjokken_sensor_1_temperature
@@ -92,9 +97,7 @@ sensor:
     on_value:
       - lvgl.label.update:
           id: lbl_temperature_kitchen
-          text:
-            format: "%.1f°C"
-            args: [ 'x + .05' ]
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
   - platform: homeassistant
     id: temperature_martin
     entity_id: sensor.martin_sensor_1_temperature
@@ -102,9 +105,10 @@ sensor:
     on_value:
       - lvgl.label.update:
           id: lbl_temperature_martin
-          text:
-            format: "%.1f°C"
-            args: [ 'x + .05' ]
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+      - lvgl.label.update:
+          id: lbl_temperature_martin_2
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
   - platform: homeassistant
     id: temperature_eivind
     entity_id: sensor.eivind_sensor_1_temperature
@@ -112,169 +116,117 @@ sensor:
     on_value:
       - lvgl.label.update:
           id: lbl_temperature_eivind
-          text:
-            format: "%.1f°C"
-            args: [ 'x + .05' ]
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+      - lvgl.label.update:
+          id: lbl_temperature_eivind_2
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
   - platform: homeassistant
-    id: media_volume
-    entity_id: sensor.sonos_kjokken_volume
+    id: temperature_stue_1
+    entity_id: sensor.stue_sensor_1_temperature
     internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_stue_1
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_stue_2
+    entity_id: sensor.stue_sensor_2_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_stue_2
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_toilet
+    entity_id: sensor.toalett_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_toalett
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_bedrom
+    entity_id: sensor.soverom_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_soverom
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_bathroom
+    entity_id: sensor.bad_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_bathroom
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_utebod
+    entity_id: sensor.utebod_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_utebod
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
 
 text_sensor:
   - platform: homeassistant
     id: light_martin
     entity_id: light.silicon_labs_ezsp_martin_taklys
     internal: true
-    on_value: !include
-      file: testing.yaml
-      vars:
-        label: lbl_lightbulb_martin
+    on_value: !include { file: testing.yaml, vars: { label: lbl_lightbulb_martin } } # inline syntax
   - platform: homeassistant
     id: light_eivind
     entity_id: light.eivind_taklys_light
     internal: true
-    on_value: !include
-      file: testing.yaml
-      vars:
-        label: lbl_lightbulb_eivind
+    on_value: !include { file: testing.yaml, vars: { label: lbl_lightbulb_eivind } } # inline syntax
   - platform: homeassistant
-    id: light_kitchen
-    entity_id: light.kjokken_powerplugg_1_switch
+    id: remote_harmony_hub
+    entity_id: remote.harmony_hub
     internal: true
-    on_value: !include
-      file: testing.yaml
-      vars:
-        label: lbl_lightbulb_kitchen
-  - platform: homeassistant
-    id: media_artist
-    entity_id: sensor.sonos_kjokken_artist
-    internal: true
-  - platform: homeassistant
-    id: media_channel
-    entity_id: sensor.sonos_kjokken_channel
-    internal: true
-  - platform: homeassistant
-    id: media_title
-    entity_id: sensor.sonos_kjokken_title
-    internal: true
-  - platform: homeassistant
-    id: media_album
-    entity_id: sensor.sonos_kjokken_album
-    internal: true
+    on_value: !include { file: testing.yaml, vars: { label: lbl_button5 } } # inline syntax
 
-psram:
-  mode: octal
-  speed: 80MHz
+text:
+  - platform: lvgl
+    name: "Textarea 1 text"
+    widget: textarea_id_1
+    mode: text
+  - platform: lvgl
+    name: "Textarea 2 text"
+    widget: textarea_id_2
+    mode: text
+  - platform: lvgl
+    name: "Textarea 3 text"
+    widget: textarea_id_3
+    mode: text
 
-output:
-  - platform: ledc
-    pin:
-      number: GPIO45
-      ignore_strapping_warning: true
-    id: ledc_gpio45
-    frequency: 100Hz
-
-i2c:
-  - id: bus_a
-    sda: GPIO39
-    scl: GPIO40
-    scan: false
-
-spi:
-  - id: lcd_spi
-    clk_pin: GPIO41
-    mosi_pin: GPIO48
-
-pca9554:
-  - id: pca9554a_device
-    address: 0x20
-    pin_count: 16
-
-display:
-  - platform: st7701s
-    id: sensecap_display
-    auto_clear_enabled: false
-    data_rate: 4MHz
-    update_interval: never
-    spi_mode: MODE3
-    color_order: RGB
-    dimensions:
-      width: 480
-      height: 480
-    invert_colors: true
-    transform:
-      mirror_x: true
-      mirror_y: true
-    cs_pin:
-      pca9554: pca9554a_device
-      number: 4
-    reset_pin:
-      pca9554: pca9554a_device
-      number: 5
-    de_pin: GPIO18
-    hsync_pin: GPIO16
-    vsync_pin: GPIO17
-    pclk_pin: GPIO21
-    init_sequence:
-      - 1 # select canned init sequence number 1
-      - delay 5ms
-      - [0xE0, 0x1F] # Set sunlight readable enhancement
-    data_pins:
-      red:
-        - GPIO4 #r1
-        - GPIO3 #r2
-        - GPIO2 #r3
-        - GPIO1 #r4
-        - GPIO0 #r5
-      green:
-        - GPIO10 #g0
-        - GPIO9 #g1
-        - GPIO8 #g2
-        - GPIO7 #g3
-        - GPIO6 #g4
-        - GPIO5 #g5
-      blue:
-        - GPIO15 #b1
-        - GPIO14 #b2
-        - GPIO13 #b3
-        - GPIO12 #b4
-        - GPIO11 #b5
-
-light:
-  - platform: monochromatic
-    name: "Backlight"
-    id: backlight
-    output: ledc_gpio45
-    restore_mode: ALWAYS_ON
-
-touchscreen:
-  platform: ft5x06
-  id: sensecap_touchscreen
-  transform:
-    mirror_x: true
-    mirror_y: true
-
-# Basic Config
 image:
   - file: bg_autumn.jpg
     id: img_bg
+    type: RGB565
+  - file: bg.jpg
+    id: img_bg2
+    type: RGB565
+  - file: bg2.jpg
+    id: img_bg3
     type: RGB565
 
 lvgl:
   disp_bg_image: img_bg
   theme:
     button:
+      bg_opa: COVER
       bg_color: 0x444444
       shadow_width: 0
       border_opa: COVER
       border_width: 1
       border_color: 0x666666
     obj:
+      bg_opa: 35%
+      bg_color: 0x00000
       border_opa: COVER
       border_width: 1
       border_color: 0x666666
-      bg_color: 0x00000
-      bg_opa: 35%
     label:
       text_color: 0xffffff
   style_definitions:
@@ -284,12 +236,25 @@ lvgl:
       pad_left: 20
       pad_right: 20
       pad_bottom: 20
+    - id: pagebg
+      pad_top: -100
+      pad_left: -20
+      pad_right: -20
+      pad_bottom: -20
+    - id: background
+      bg_opa: 35%
+      bg_color: 0x000000
+    - id: info_box
+      width: 210
+      height: 120
+    - id: grid_cell_stretch
+      grid_cell_x_align: STRETCH
+      grid_cell_y_align: STRETCH
   top_layer:
     widgets:
       - label:
           id: lbl_clock
           text: '--:--'
-          text_color: 0xffffff
           text_font: f_24
           x: 20
           y: 20
@@ -301,7 +266,6 @@ lvgl:
           x: -20
           y: 20
           text_align: right
-          text_color: 0xFFFFFF
           hidden: true
   on_idle:
     - timeout: 30s
@@ -312,66 +276,345 @@ lvgl:
       styles: page
       on_swipe_left:
         - lvgl.page.next:
+            animation: OUT_LEFT
+            time: 300ms
       on_swipe_right:
         - lvgl.page.previous:
+            animation: OUT_LEFT
+            time: 300ms
       widgets:
+        - image:
+            src: img_bg3
+            x: -20
+            y: -100
+            width: 480
+            height: 480
         - obj:
-            bg_opa: 35%
-            bg_color: 0x000000
-            width: 210
-            height: SIZE_CONTENT
+            styles:
+              - info_box
             align: TOP_LEFT
             widgets:
               - label:
                   text: 'Utendørs'
                   text_font: f_24
-                  text_color: 0xffffff
               - label:
                   id: lbl_temperature_outdoor
                   text: '--.-°C'
-                  width: 100%
-                  text_align: CENTER
+                  align: BOTTOM_MID
                   text_font: f_48
-                  text_color: 0xffffff
-                  y: 30
         - obj:
-            bg_opa: 35%
-            bg_color: 0x000000
-            width: 210
-            height: SIZE_CONTENT
+            styles:
+              - info_box
             align: TOP_RIGHT
             widgets:
               - label:
                   text: 'Kjøkken'
                   text_font: f_24
-                  text_color: 0xffffff
               - label:
                   id: lbl_temperature_kitchen
                   text: '--.-°C'
-                  width: 100%
-                  text_align: CENTER
+                  align: BOTTOM_MID
                   text_font: f_48
-                  text_color: 0xffffff
-                  y: 30
-        - button:
-            width: 60
-            height: 60
-            align: BOTTOM_LEFT
-            id: btn_lightbulb_kitchen
+        - obj:
+            styles:
+              - info_box
+            align: TOP_LEFT
+            y: 140
             widgets:
               - label:
-                  id: lbl_lightbulb_kitchen
-                  align: CENTER
-                  text_font: mdi_42
-                  text: "\U000F0336" # mdi-lightbulb-outline
-                  text_color: 0xffffff    
-                  checked:
-                    text_color: 0xffea00
-            on_short_click:
-              - homeassistant.action:
-                  action: light.toggle
-                  data:
-                    entity_id: light.kjokken_powerplugg_1_switch
+                  text: 'Martin'
+                  text_font: f_24
+        - obj:
+            styles:
+              - info_box
+            align: TOP_RIGHT
+            y: 140
+            widgets:
+              - label:
+                  text: 'Eivind'
+                  text_font: f_24
+        - obj:
+            pad_all: 0
+            bg_opa: TRANSP
+            border_width: 0
+            width: 100%
+            height: 72
+            align: BOTTOM_MID
+            layout:
+              type: grid
+              grid_columns: [fr(1), fr(1), fr(1), fr(1), fr(1)]
+              pad_column: 20px
+              pad_row: 20px
+              grid_rows: [fr(1)]
+            widgets:
+              - button:
+                  id: button1
+                  styles:
+                    - grid_cell_stretch
+                    - background
+                  widgets:
+                    - label:
+                        align: CENTER
+                        text_font: montserrat_34
+                        text: "\uF001" # mdi-lightbulb-outline
+                  on_click:
+                    - lvgl.page.show: page_setup
+              - button:
+                  id: button2
+                  styles:
+                    - grid_cell_stretch
+                    - background
+                  widgets:
+                    - label:
+                        align: CENTER
+                        text_font: montserrat_34
+                        text: "\uF028" # mdi-lightbulb-outline
+              - button:
+                  id: button3
+                  styles:
+                    - grid_cell_stretch
+                    - background
+                  widgets:
+                    - label:
+                        align: CENTER
+                        text_font: montserrat_34
+                        text: "\uF028" # mdi-lightbulb-outline
+              - button:
+                  id: button4
+                  styles:
+                    - grid_cell_stretch
+                    - background
+                  widgets:
+                    - label:
+                        align: CENTER
+                        text_font: montserrat_34
+                        text: "\uF028" # mdi-lightbulb-outline
+              - button:
+                  id: button5
+                  styles:
+                    - grid_cell_stretch
+                    - background
+                  widgets:
+                    - label:
+                        id: lbl_button5
+                        align: CENTER
+                        text_font: montserrat_34
+                        text: "\uF008" # mdi-lightbulb-outline
+                        checked:
+                          text_color: green
+    - id: page_1floor
+      styles: page
+      on_swipe_left:
+        - lvgl.page.next:
+            animation: OUT_LEFT
+            time: 300ms
+      on_swipe_right:
+        - lvgl.page.previous:
+            animation: OUT_LEFT
+            time: 300ms
+      widgets:
+        - image:
+            src: img_bg2
+            x: -20
+            y: -100
+            width: 480
+            height: 480
+        - label:
+            text: '1. etasje'
+            text_font: f_44b
+            align: TOP_MID
+            y: -100
+        - obj:
+            width: 100%
+            height: 100%
+            align: BOTTOM_LEFT
+            bg_opa: TRANSP
+            pad_all: 0
+            border_width: 0
+            layout:
+              type: grid
+              grid_columns: [fr(1), fr(1)]
+              pad_column: 20px
+              pad_row: 20px
+              grid_rows: [fr(1), fr(1), fr(1)]
+            widgets:
+              - obj:
+                  styles: grid_cell_stretch
+                  pad_all: 10
+                  widgets:
+                    - label:
+                        text: 'Stue #1'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_stue_1
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  pad_all: 10
+                  widgets:
+                    - label:
+                        text: 'Stue #2'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_stue_2
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  pad_all: 10
+                  widgets:
+                    - label:
+                        text: 'Toalett'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_toalett
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  pad_all: 10
+                  widgets:
+                    - label:
+                        text: 'Utebod'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_utebod
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+#              - obj:
+#                  styles: grid_cell_stretch
+#                  pad_all: 10
+#                  widgets:
+#                    - label:
+#                        text: 'Utendørs'
+#                        text_font: f_24
+#                    - label:
+#                        id: lbl_temperature_outdoor_2
+#                        text: '--.-°C'
+#                        align: BOTTOM_MID
+#                        text_font: f_48
+#              - obj:
+#                  styles: grid_cell_stretch
+#                  pad_all: 10
+#                  widgets:
+#                    - label:
+#                        id: lbl_temperatur_6
+#                        text: 'Temperatur #6'
+#                        width: 100%
+#                        long_mode: SCROLL
+#                        text_font: f_24
+#                    - label:
+#                        id: lbl_temperatur_6_value
+#                        text: '--.-°C'
+#                        align: BOTTOM_MID
+#                        text_font: f_48
+    - id: page_2floor
+      styles: page
+      on_swipe_left:
+        - lvgl.page.next:
+            animation: OUT_LEFT
+            time: 300ms
+      on_swipe_right:
+        - lvgl.page.previous:
+            animation: OUT_LEFT
+            time: 300ms
+      widgets:
+        - label:
+            text: '2. etasje'
+            text_font: f_44b
+            align: TOP_MID
+            y: -100
+        - obj:
+            width: 100%
+            height: 100%
+            align: BOTTOM_LEFT
+            bg_opa: TRANSP
+            pad_all: 0
+            border_width: 0
+            layout:
+              type: grid
+              grid_columns: [fr(1), fr(1)]
+              pad_column: 20px
+              pad_row: 20px
+              grid_rows: [fr(1), fr(1), fr(1)]
+            widgets:
+              - obj:
+                  styles: grid_cell_stretch
+                  pad_all: 10
+                  widgets:
+                    - label:
+                        text: 'Martin'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_martin_2
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  pad_all: 10
+                  widgets:
+                    - label:
+                        text: 'Eivind'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_eivind_2
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  pad_all: 10
+                  widgets:
+                    - label:
+                        text: 'Soverom'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_soverom
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  pad_all: 10
+                  widgets:
+                    - label:
+                        text: 'Bad'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_bathroom
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+#              - obj:
+#                  styles: grid_cell_stretch
+#                  pad_all: 10
+#                  widgets:
+#                    - label:
+#                        text: 'Temperatur 5'
+#                        text_font: f_24
+#                    - label:
+#                        id: lbl_temperatur_2_5_value
+#                        text: '--.-°C'
+#                        align: BOTTOM_MID
+#                        text_font: f_48
+#              - obj:
+#                  styles: grid_cell_stretch
+#                  pad_all: 10
+#                  widgets:
+#                    - label:
+#                        text: 'Temperatur 6'
+#                        text_font: f_24
+#                    - label:
+#                        id: lbl_temperatur_2_6_value
+#                        text: '--.-°C'
+#                        align: BOTTOM_MID
+#                        text_font: f_48
     - id: page_martin
       styles: page
       on_swipe_left:
@@ -385,38 +628,33 @@ lvgl:
             align: TOP_MID
             y: -100
         - obj:
-            bg_opa: 35%
-            bg_color: 0x000000
             width: 210
-            height: SIZE_CONTENT
+            height: 120
             align: TOP_LEFT
             widgets:
               - label:
                   text: 'Temperatur'
                   text_font: f_24
-                  text_color: 0xffffff
               - label:
                   id: lbl_temperature_martin
                   text: '--.-°C'
-                  width: 100%
-                  text_align: CENTER
+                  align: BOTTOM_MID
                   text_font: f_48
-                  text_color: 0xffffff
-                  y: 30
         - button:
-            width: 60
-            height: 60
+            width: 72
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
             align: BOTTOM_LEFT
             id: btn_lightbulb_martin
             widgets:
               - label:
                   id: lbl_lightbulb_martin
                   align: CENTER
-                  text_font: mdi_42
-                  text: "\U000F0336" # mdi-lightbulb-outline
-                  text_color: 0xffffff    
+                  text_font: f_48
+                  text: "\uf0eb" # Lightbulb
                   checked:
-                    text_color: 0xffea00
+                    text_color: gold #0xffea00
             on_short_click:
               - homeassistant.action:
                   action: light.toggle
@@ -435,43 +673,74 @@ lvgl:
             align: TOP_MID
             y: -100
         - obj:
-            bg_opa: 35%
-            bg_color: 0x000000
             width: 210
-            height: SIZE_CONTENT
+            height: 120
             align: TOP_LEFT
             widgets:
               - label:
                   text: 'Temperatur'
                   text_font: f_24
-                  text_color: 0xffffff
               - label:
                   id: lbl_temperature_eivind
                   text: '--.-°C'
-                  width: 100%
-                  text_align: CENTER
+                  align: BOTTOM_MID
                   text_font: f_48
-                  text_color: 0xffffff
-                  y: 30
         - button:
-            width: 60
-            height: 60
+            width: 72
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
             align: BOTTOM_LEFT
             id: btn_lightbulb_eivind
             widgets:
               - label:
                   id: lbl_lightbulb_eivind
                   align: CENTER
-                  text_font: mdi_42
-                  text: "\U000F0336" # mdi-lightbulb-outline
-                  text_color: 0xffffff    
+                  text_font: f_48
+                  text: "\uf0eb" # Lightbulb
                   checked:
-                    text_color: 0xffea00
+                    text_color: gold #0xffea00
             on_short_click:
               - homeassistant.action:
                   action: light.toggle
                   data:
                     entity_id: light.eivind_taklys_light
+    - id: page_setup
+      styles: page
+      skip: true
+      bg_color: 0x00000
+      bg_opa: 75%
+      widgets:
+        - label:
+            id: textarea_id_1
+            width: 100%
+            text_font: f_48
+            long_mode: SCROLL_CIRCULAR 
+        - label:
+            id: textarea_id_2
+            width: 100%
+            text_font: f_48
+            long_mode: SCROLL_CIRCULAR 
+            y: 50
+        - label:
+            id: textarea_id_3
+            width: 100%
+            text_font: f_48
+            long_mode: SCROLL_CIRCULAR 
+            y: 100
+        - button:
+            width: 72
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
+            align: BOTTOM_RIGHT
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: montserrat_34
+                  text: "\uF8A2"
+            on_click:
+              - lvgl.page.show: main_page
 
 font:
   - file: gfonts://Montserrat@Medium
@@ -480,35 +749,30 @@ font:
     id: f_24
     glyphsets:
       - GF_Latin_Core
-  - file: gfonts://Montserrat@Medium
-    size: 42
-    bpp: 4
-    id: f_42
-    glyphsets:
-      - GF_Latin_Core
     extras: 
-      - file: https://github.com/Templarian/MaterialDesign-Webfont/raw/refs/heads/master/fonts/materialdesignicons-webfont.ttf
-        glyphs: [
-          "\U000F0335", # mdi-lightbulb
-          "\U000F0336", # mdi-lightbulb-outline
-        ]      
+      - file: 'https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/7.x/otfs/Font%20Awesome%207%20Free-Solid-900.otf'
+        glyphs: ${glyphs}
+  - file: gfonts://Montserrat@Medium
+    size: 34
+    bpp: 4
+    id: f_34
+    glyphsets: GF_Latin_Core
+    extras: 
+      - file: 'https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/7.x/otfs/Font%20Awesome%207%20Free-Solid-900.otf'
+        glyphs: ${glyphs}
   - file: gfonts://Montserrat@Medium
     size: 48
     bpp: 4
     id: f_48
-    glyphsets:
-      - GF_Latin_Core
+    glyphsets: GF_Latin_Core
+    extras: 
+      - file: 'https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/7.x/otfs/Font%20Awesome%207%20Free-Solid-900.otf'
+        glyphs: ${glyphs}
   - file: gfonts://Montserrat@Bold
     size: 44
     bpp: 4
     id: f_44b
-    glyphsets:
-      - GF_Latin_Core
-  - file: https://github.com/Templarian/MaterialDesign-Webfont/raw/refs/heads/master/fonts/materialdesignicons-webfont.ttf
-    id: mdi_42
-    size: 42
-    bpp: 4
-    glyphs: [
-      "\U000F0335", # mdi-lightbulb
-      "\U000F0336", # mdi-lightbulb-outline
-      ]
+    glyphsets: GF_Latin_Core
+    extras: 
+      - file: 'https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/7.x/otfs/Font%20Awesome%207%20Free-Solid-900.otf'
+        glyphs: ${glyphs}

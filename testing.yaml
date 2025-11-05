@@ -2,13 +2,13 @@
     id: ${label}
     state:
         checked: !lambda return (0 == x.compare(std::string{"on"}));
-    text: !lambda |-
-        static char buf[10];
-        std::string icon;
-        if (0 == x.compare(std::string{"on"})) {
-            icon = "\U000F0335";
-        } else {
-            icon = "\U000F0336";
-        }
-        snprintf(buf, sizeof(buf), "%s", icon.c_str());
-        return buf;
+#    text: !lambda |-
+#        static char buf[10];
+#        std::string icon;
+#        if (0 == x.compare(std::string{"on"})) {
+#            icon = "\U000F0335";
+#        } else {
+#            icon = "\U000F0336";
+#        }
+#        snprintf(buf, sizeof(buf), "%s", icon.c_str());
+#        return buf;
