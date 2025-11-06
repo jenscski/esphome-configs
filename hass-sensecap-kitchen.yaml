@@ -18,8 +18,8 @@ packages:
   common: !include packages/common-32-api.yaml
   sensecap: !include packages/sensecap.yaml
 
-esphome:
-  build_path: "/config/esphome/.esphome/build/${name}"
+#esphome:
+#  build_path: "/config/esphome/.esphome/build/${name}"
 
 api:
   on_client_connected:
@@ -174,17 +174,29 @@ text_sensor:
     id: light_martin
     entity_id: light.silicon_labs_ezsp_martin_taklys
     internal: true
-    on_value: !include { file: testing.yaml, vars: { label: lbl_lightbulb_martin } } # inline syntax
+    on_value:
+      - lvgl.label.update:
+          id: lbl_lightbulb_martin
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"on"}));
   - platform: homeassistant
     id: light_eivind
     entity_id: light.eivind_taklys_light
     internal: true
-    on_value: !include { file: testing.yaml, vars: { label: lbl_lightbulb_eivind } } # inline syntax
+    on_value:
+      - lvgl.label.update:
+          id: lbl_lightbulb_eivind
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"on"}));
   - platform: homeassistant
     id: remote_harmony_hub
     entity_id: remote.harmony_hub
     internal: true
-    on_value: !include { file: testing.yaml, vars: { label: lbl_button5 } } # inline syntax
+    on_value:
+      - lvgl.label.update:
+          id: lbl_button5
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"on"}));
 
 text:
   - platform: lvgl
@@ -276,19 +288,9 @@ lvgl:
       styles: page
       on_swipe_left:
         - lvgl.page.next:
-            animation: OUT_LEFT
-            time: 300ms
       on_swipe_right:
         - lvgl.page.previous:
-            animation: OUT_LEFT
-            time: 300ms
       widgets:
-        - image:
-            src: img_bg3
-            x: -20
-            y: -100
-            width: 480
-            height: 480
         - obj:
             styles:
               - info_box
@@ -315,24 +317,6 @@ lvgl:
                   text: '--.-°C'
                   align: BOTTOM_MID
                   text_font: f_48
-        - obj:
-            styles:
-              - info_box
-            align: TOP_LEFT
-            y: 140
-            widgets:
-              - label:
-                  text: 'Martin'
-                  text_font: f_24
-        - obj:
-            styles:
-              - info_box
-            align: TOP_RIGHT
-            y: 140
-            widgets:
-              - label:
-                  text: 'Eivind'
-                  text_font: f_24
         - obj:
             pad_all: 0
             bg_opa: TRANSP
@@ -406,12 +390,8 @@ lvgl:
       styles: page
       on_swipe_left:
         - lvgl.page.next:
-            animation: OUT_LEFT
-            time: 300ms
       on_swipe_right:
         - lvgl.page.previous:
-            animation: OUT_LEFT
-            time: 300ms
       widgets:
         - image:
             src: img_bg2
@@ -486,44 +466,19 @@ lvgl:
                         text: '--.-°C'
                         align: BOTTOM_MID
                         text_font: f_48
-#              - obj:
-#                  styles: grid_cell_stretch
-#                  pad_all: 10
-#                  widgets:
-#                    - label:
-#                        text: 'Utendørs'
-#                        text_font: f_24
-#                    - label:
-#                        id: lbl_temperature_outdoor_2
-#                        text: '--.-°C'
-#                        align: BOTTOM_MID
-#                        text_font: f_48
-#              - obj:
-#                  styles: grid_cell_stretch
-#                  pad_all: 10
-#                  widgets:
-#                    - label:
-#                        id: lbl_temperatur_6
-#                        text: 'Temperatur #6'
-#                        width: 100%
-#                        long_mode: SCROLL
-#                        text_font: f_24
-#                    - label:
-#                        id: lbl_temperatur_6_value
-#                        text: '--.-°C'
-#                        align: BOTTOM_MID
-#                        text_font: f_48
     - id: page_2floor
       styles: page
       on_swipe_left:
         - lvgl.page.next:
-            animation: OUT_LEFT
-            time: 300ms
       on_swipe_right:
         - lvgl.page.previous:
-            animation: OUT_LEFT
-            time: 300ms
       widgets:
+        - image:
+            src: img_bg3
+            x: -20
+            y: -100
+            width: 480
+            height: 480
         - label:
             text: '2. etasje'
             text_font: f_44b
@@ -591,30 +546,6 @@ lvgl:
                         text: '--.-°C'
                         align: BOTTOM_MID
                         text_font: f_48
-#              - obj:
-#                  styles: grid_cell_stretch
-#                  pad_all: 10
-#                  widgets:
-#                    - label:
-#                        text: 'Temperatur 5'
-#                        text_font: f_24
-#                    - label:
-#                        id: lbl_temperatur_2_5_value
-#                        text: '--.-°C'
-#                        align: BOTTOM_MID
-#                        text_font: f_48
-#              - obj:
-#                  styles: grid_cell_stretch
-#                  pad_all: 10
-#                  widgets:
-#                    - label:
-#                        text: 'Temperatur 6'
-#                        text_font: f_24
-#                    - label:
-#                        id: lbl_temperatur_2_6_value
-#                        text: '--.-°C'
-#                        align: BOTTOM_MID
-#                        text_font: f_48
     - id: page_martin
       styles: page
       on_swipe_left:
@@ -651,7 +582,7 @@ lvgl:
               - label:
                   id: lbl_lightbulb_martin
                   align: CENTER
-                  text_font: f_48
+                  text_font: f_34
                   text: "\uf0eb" # Lightbulb
                   checked:
                     text_color: gold #0xffea00
@@ -696,7 +627,7 @@ lvgl:
               - label:
                   id: lbl_lightbulb_eivind
                   align: CENTER
-                  text_font: f_48
+                  text_font: f_34
                   text: "\uf0eb" # Lightbulb
                   checked:
                     text_color: gold #0xffea00
