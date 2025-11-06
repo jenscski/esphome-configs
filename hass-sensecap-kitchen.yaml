@@ -71,9 +71,9 @@ binary_sensor:
   - platform: lvgl
     widget: button3
     name: 'Button #3'
-  - platform: lvgl
-    widget: button4
-    name: 'Button #4'
+  # - platform: lvgl
+  #   widget: button4
+  #   name: 'Button #4'
   - platform: lvgl
     widget: button5
     name: 'Button #5'
@@ -327,77 +327,72 @@ lvgl:
                   text: '--.-°C'
                   align: BOTTOM_MID
                   text_font: f_48
-        - obj:
-            pad_all: 0
-            bg_opa: TRANSP
-            border_width: 0
-            width: 100%
+        - button:
+            id: button1
+            width: 72
             height: 72
-            align: BOTTOM_MID
-            layout:
-              type: grid
-              grid_columns: [fr(1), fr(1), fr(1), fr(1), fr(1)]
-              pad_column: 20px
-              pad_row: 20px
-              grid_rows: [fr(1)]
+            align: BOTTOM_LEFT
+            styles: background
             widgets:
-              - button:
-                  id: button1
-                  styles:
-                    - grid_cell_stretch
-                    - background
-                  widgets:
-                    - label:
-                        id: lbl_button1
-                        align: CENTER
-                        text_font: montserrat_34
-                        text: "\uF001" # Music
-                        checked:
-                          text_color: green
-#                  on_click:
-#                    - lvgl.page.show: page_setup
-              - button:
-                  id: button2
-                  pad_all: 5
-                  styles:
-                    - grid_cell_stretch
-                    - background
-                  widgets:
-                    - image:
-                        width: 62
-                        height: 62
-                        src: img_nrk_p3_btn
-              - button:
-                  id: button3
-                  styles:
-                    - grid_cell_stretch
-                    - background
-                  widgets:
-                    - image:
-                        src: img_nrk_p3_musikk_btn
-              - button:
-                  id: button4
-                  styles:
-                    - grid_cell_stretch
-                    - background
-                  widgets:
-                    - label:
-                        align: CENTER
-                        text_font: montserrat_34
-                        text: "\uF028" # mdi-lightbulb-outline
-              - button:
-                  id: button5
-                  styles:
-                    - grid_cell_stretch
-                    - background
-                  widgets:
-                    - label:
-                        id: lbl_button5
-                        align: CENTER
-                        text_font: montserrat_34
-                        text: "\uF008" # mdi-lightbulb-outline
-                        checked:
-                          text_color: green
+              - label:
+                  id: lbl_button1
+                  align: CENTER
+                  text_font: montserrat_34
+                  text: "\uF001" # Music
+                  checked:
+                    text_color: green
+        - button:
+            id: button2
+            clip_corner: true
+            pad_all: 0
+            width: 72
+            height: 72
+            align: BOTTOM_LEFT
+            x: 92
+            styles: background
+            widgets:
+              - image:
+                  align: CENTER
+                  src: img_nrk_p3_btn
+        - button:
+            id: button3
+            clip_corner: true
+            pad_all: 0
+            width: 72
+            height: 72
+            align: BOTTOM_MId
+            styles: background
+            widgets:
+              - image:
+                  align: CENTER
+                  src: img_nrk_p3_musikk_btn
+        # - button:
+        #     id: button4
+        #     width: 72
+        #     height: 72
+        #     align: BOTTOM_RIGHT
+        #     styles:
+        #       - grid_cell_stretch
+        #       - background
+        #     widgets:
+        #       - label:
+        #           align: CENTER
+        #           text_font: montserrat_34
+        #           text: "\uF028" # mdi-lightbulb-outline
+        - button:
+            id: button5
+            width: 72
+            height: 72
+            align: BOTTOM_RIGHT
+            styles: background
+            widgets:
+              - label:
+                  id: lbl_button5
+                  align: CENTER
+                  text_font: montserrat_34
+                  text: "\uF008" # mdi-lightbulb-outline
+                  checked:
+                    text_color: green
         - obj:
             y: 140
             height: SIZE_CONTENT
