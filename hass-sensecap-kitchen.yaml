@@ -200,7 +200,15 @@ text_sensor:
           id: lbl_button5
           state:
             checked: !lambda return (0 == x.compare(std::string{"on"}));
-
+  - platform: homeassistant
+    id: media_player_kjokken
+    entity_id: media_player.kjokken
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_button1
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"playing"}));
 text:
   - platform: lvgl
     name: "Textarea 1 text"
@@ -218,6 +226,12 @@ text:
 image:
   - file: images/bg_autumn_480x480.jpg
     id: img_bg
+    type: RGB565
+  - file: images/nrk_p3.jpg
+    id: img_nrk_p3_btn
+    type: RGB565
+  - file: images/nrk_p3_musikk.jpg
+    id: img_nrk_p3_musikk_btn
     type: RGB565
 
 lvgl:
@@ -334,31 +348,33 @@ lvgl:
                     - background
                   widgets:
                     - label:
+                        id: lbl_button1
                         align: CENTER
                         text_font: montserrat_34
-                        text: "\uF001" # mdi-lightbulb-outline
-                  on_click:
-                    - lvgl.page.show: page_setup
+                        text: "\uF001" # Music
+                        checked:
+                          text_color: green
+#                  on_click:
+#                    - lvgl.page.show: page_setup
               - button:
                   id: button2
+                  pad_all: 5
                   styles:
                     - grid_cell_stretch
                     - background
                   widgets:
-                    - label:
-                        align: CENTER
-                        text_font: montserrat_34
-                        text: "\uF028" # mdi-lightbulb-outline
+                    - image:
+                        width: 62
+                        height: 62
+                        src: img_nrk_p3_btn
               - button:
                   id: button3
                   styles:
                     - grid_cell_stretch
                     - background
                   widgets:
-                    - label:
-                        align: CENTER
-                        text_font: montserrat_34
-                        text: "\uF028" # mdi-lightbulb-outline
+                    - image:
+                        src: img_nrk_p3_musikk_btn
               - button:
                   id: button4
                   styles:
@@ -382,6 +398,29 @@ lvgl:
                         text: "\uF008" # mdi-lightbulb-outline
                         checked:
                           text_color: green
+        - obj:
+            y: 140
+            height: SIZE_CONTENT
+            width: 100%
+            widgets:
+              - label:
+                  id: textarea_id_1
+                  width: 100%
+                  text_font: f_24
+                  long_mode: SCROLL_CIRCULAR
+                  y: 0
+              - label:
+                  id: textarea_id_2
+                  width: 100%
+                  text_font: f_24
+                  long_mode: SCROLL_CIRCULAR 
+                  y: 35
+              - label:
+                  id: textarea_id_3
+                  width: 100%
+                  text_font: f_24
+                  long_mode: SCROLL_CIRCULAR 
+                  y: 70
     - id: page_1floor
       styles: page
       on_swipe_left:
@@ -640,23 +679,6 @@ lvgl:
       bg_color: 0x00000
       bg_opa: 75%
       widgets:
-        - label:
-            id: textarea_id_1
-            width: 100%
-            text_font: f_48
-            long_mode: SCROLL_CIRCULAR 
-        - label:
-            id: textarea_id_2
-            width: 100%
-            text_font: f_48
-            long_mode: SCROLL_CIRCULAR 
-            y: 50
-        - label:
-            id: textarea_id_3
-            width: 100%
-            text_font: f_48
-            long_mode: SCROLL_CIRCULAR 
-            y: 100
         - button:
             width: 72
             height: 72
