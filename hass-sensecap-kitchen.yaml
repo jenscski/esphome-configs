@@ -77,6 +77,12 @@ binary_sensor:
   - platform: lvgl
     widget: button5
     name: 'Button #5'
+  - platform: lvgl
+    widget: btn_1floor_off
+    name: '1 Floor Off'
+  - platform: lvgl
+    widget: btn_2floor_off
+    name: '2 Floor Off'
 
 sensor:
   - platform: homeassistant
@@ -87,9 +93,6 @@ sensor:
       - lvgl.label.update:
           id: lbl_temperature_outdoor
           text: !lambda return str_sprintf("%.1f°C", x).c_str();
-#      - lvgl.label.update:
-#          id: lbl_temperature_outdoor_2
-#          text: !lambda return str_sprintf("%.1f°C", x).c_str();
   - platform: homeassistant
     id: temperature_kitchen
     entity_id: sensor.kjokken_sensor_1_temperature
@@ -213,14 +216,8 @@ text:
     mode: text
 
 image:
-  - file: bg_autumn.jpg
+  - file: images/bg_autumn_480x480.jpg
     id: img_bg
-    type: RGB565
-  - file: bg.jpg
-    id: img_bg2
-    type: RGB565
-  - file: bg2.jpg
-    id: img_bg3
     type: RGB565
 
 lvgl:
@@ -292,8 +289,7 @@ lvgl:
         - lvgl.page.previous:
       widgets:
         - obj:
-            styles:
-              - info_box
+            styles: info_box
             align: TOP_LEFT
             widgets:
               - label:
@@ -393,21 +389,26 @@ lvgl:
       on_swipe_right:
         - lvgl.page.previous:
       widgets:
-        - image:
-            src: img_bg2
-            x: -20
-            y: -100
-            width: 480
-            height: 480
         - label:
             text: '1. etasje'
             text_font: f_44b
             align: TOP_MID
             y: -100
+        - button:
+            id: btn_1floor_off
+            width: 100%
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
+            align: BOTTOM_MID
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: f_34
+                  text: "Alt av"
         - obj:
             width: 100%
-            height: 100%
-            align: BOTTOM_LEFT
+            height: 260
             bg_opa: TRANSP
             pad_all: 0
             border_width: 0
@@ -416,11 +417,10 @@ lvgl:
               grid_columns: [fr(1), fr(1)]
               pad_column: 20px
               pad_row: 20px
-              grid_rows: [fr(1), fr(1), fr(1)]
+              grid_rows: [fr(1), fr(1)]
             widgets:
               - obj:
                   styles: grid_cell_stretch
-                  pad_all: 10
                   widgets:
                     - label:
                         text: 'Stue #1'
@@ -432,7 +432,6 @@ lvgl:
                         text_font: f_48
               - obj:
                   styles: grid_cell_stretch
-                  pad_all: 10
                   widgets:
                     - label:
                         text: 'Stue #2'
@@ -444,7 +443,6 @@ lvgl:
                         text_font: f_48
               - obj:
                   styles: grid_cell_stretch
-                  pad_all: 10
                   widgets:
                     - label:
                         text: 'Toalett'
@@ -456,7 +454,6 @@ lvgl:
                         text_font: f_48
               - obj:
                   styles: grid_cell_stretch
-                  pad_all: 10
                   widgets:
                     - label:
                         text: 'Utebod'
@@ -473,21 +470,26 @@ lvgl:
       on_swipe_right:
         - lvgl.page.previous:
       widgets:
-        - image:
-            src: img_bg3
-            x: -20
-            y: -100
-            width: 480
-            height: 480
         - label:
             text: '2. etasje'
             text_font: f_44b
             align: TOP_MID
             y: -100
+        - button:
+            id: btn_2floor_off
+            width: 100%
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
+            align: BOTTOM_MID
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: f_34
+                  text: "Alt av"
         - obj:
             width: 100%
-            height: 100%
-            align: BOTTOM_LEFT
+            height: 260
             bg_opa: TRANSP
             pad_all: 0
             border_width: 0
@@ -496,11 +498,10 @@ lvgl:
               grid_columns: [fr(1), fr(1)]
               pad_column: 20px
               pad_row: 20px
-              grid_rows: [fr(1), fr(1), fr(1)]
+              grid_rows: [fr(1), fr(1)]
             widgets:
               - obj:
                   styles: grid_cell_stretch
-                  pad_all: 10
                   widgets:
                     - label:
                         text: 'Martin'
@@ -512,7 +513,6 @@ lvgl:
                         text_font: f_48
               - obj:
                   styles: grid_cell_stretch
-                  pad_all: 10
                   widgets:
                     - label:
                         text: 'Eivind'
@@ -524,7 +524,6 @@ lvgl:
                         text_font: f_48
               - obj:
                   styles: grid_cell_stretch
-                  pad_all: 10
                   widgets:
                     - label:
                         text: 'Soverom'
@@ -536,7 +535,6 @@ lvgl:
                         text_font: f_48
               - obj:
                   styles: grid_cell_stretch
-                  pad_all: 10
                   widgets:
                     - label:
                         text: 'Bad'
