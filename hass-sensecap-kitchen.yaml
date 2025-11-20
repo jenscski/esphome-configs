@@ -182,6 +182,10 @@ text_sensor:
           id: lbl_lightbulb_martin
           state:
             checked: !lambda return (0 == x.compare(std::string{"on"}));
+      - lvgl.label.update:
+          id: lbl_lightbulb_martin_2
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"on"}));
   - platform: homeassistant
     id: light_eivind
     entity_id: light.eivind_taklys_light
@@ -189,6 +193,19 @@ text_sensor:
     on_value:
       - lvgl.label.update:
           id: lbl_lightbulb_eivind
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"on"}));
+      - lvgl.label.update:
+          id: lbl_lightbulb_eivind_2
+          state:
+            checked: !lambda return (0 == x.compare(std::string{"on"}));
+  - platform: homeassistant
+    id: light_soverom
+    entity_id: light.silicon_labs_ezsp_soverom_taklys
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_lightbulb_soverom
           state:
             checked: !lambda return (0 == x.compare(std::string{"on"}));
   - platform: homeassistant
@@ -536,10 +553,19 @@ lvgl:
             widgets:
               - obj:
                   styles: grid_cell_stretch
+                  on_short_click:
+                    - lvgl.page.show: page_martin
                   widgets:
                     - label:
                         text: 'Martin'
                         text_font: f_24
+                    - label:
+                        id: lbl_lightbulb_martin_2
+                        align: TOP_RIGHT
+                        text_font: f_24
+                        text: "\uf0eb" # Lightbulb
+                        checked:
+                          text_color: gold #0xffea00
                     - label:
                         id: lbl_temperature_martin_2
                         text: '--.-°C'
@@ -547,10 +573,19 @@ lvgl:
                         text_font: f_48
               - obj:
                   styles: grid_cell_stretch
+                  on_short_click:
+                    - lvgl.page.show: page_eivind
                   widgets:
                     - label:
                         text: 'Eivind'
                         text_font: f_24
+                    - label:
+                        id: lbl_lightbulb_eivind_2
+                        align: TOP_RIGHT
+                        text_font: f_24
+                        text: "\uf0eb" # Lightbulb
+                        checked:
+                          text_color: gold #0xffea00
                     - label:
                         id: lbl_temperature_eivind_2
                         text: '--.-°C'
@@ -562,6 +597,13 @@ lvgl:
                     - label:
                         text: 'Soverom'
                         text_font: f_24
+                    - label:
+                        id: lbl_lightbulb_soverom
+                        align: TOP_RIGHT
+                        text_font: f_24
+                        text: "\uf0eb" # Lightbulb
+                        checked:
+                          text_color: gold #0xffea00
                     - label:
                         id: lbl_temperature_soverom
                         text: '--.-°C'
