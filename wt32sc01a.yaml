@@ -5,13 +5,18 @@ substitutions:
   board: esp-wrover-kit
 
 packages:
-  common: !include packages/common-32-api.yaml
+  common: !include packages/common-32-mqtt.yaml
 
 esp32:
   flash_size: 16MB
 #  framework:
 #    sdkconfig_options:
 #      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
+
+wifi:
+  fast_connect: true
+  ssid: !secret wifi_ssid_lexit
+  password: !secret wifi_password_lexit
 
 preferences:
   flash_write_interval: 15min
@@ -61,13 +66,15 @@ display:
     reset_pin: GPIO22
     invert_colors: false
     auto_clear_enabled: False
-    update_interval: never
-      
+    rotation: 180
+
+image:
+  - file: images/bg_autumn_480x480.jpg
+    id: img_bg
+    type: RGB565
+
 lvgl:
-#  displays:
-#    - wt32sc01a_display
-#  touchscreens:
-#    - wt32sc01a_touch
+  disp_bg_image: img_bg
   style_definitions:
     - id: header_footer
       bg_color: 0x2F8CD8
@@ -85,6 +92,9 @@ lvgl:
       height: 30
   pages:
     - id: main_page
+      bg_opa: COVER
+      bg_image_src: img_bg
+      bg_image_opa: COVER
       widgets:
         - obj:
             align: TOP_MID
