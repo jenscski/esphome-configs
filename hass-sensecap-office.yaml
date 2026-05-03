@@ -1,0 +1,805 @@
+substitutions:
+  name: hass-sensecap-office
+  friendly_name: "SenseCAP Office"
+  comment: Seeed SenseCap D1 Indicator
+  glyphs: [
+      "\uf26c", # Tv
+      "\uf0eb", # Lightbulb
+      "\uf001", # Music
+      "\uf6a9", # volume-xmark
+      "\uf026", # volume-off
+      "\uf027", # volume-low
+      "\uf028", # volume-high
+      "\uf048", # backward-step
+      "\uf051", # forward-step
+      "\uf1bb", # tree
+    ]
+
+packages:
+  common: !include packages/common-32-api.yaml
+  sensecap: !include packages/sensecap.yaml
+
+#esphome:
+#  build_path: "/config/esphome/.esphome/build/${name}"
+
+api:
+  batch_delay: 0ms  # Disable batching delay for immediate state updates  
+  on_client_connected:
+    - lvgl.widget.show: lbl_hastatus
+  on_client_disconnected:
+    then:
+      - if:
+          condition:
+            not:
+              api.connected:
+          then:
+            - lvgl.widget.hide: lbl_hastatus
+
+time:
+  - platform: homeassistant
+    id: !extend hass_time
+    on_time_sync:
+      - script.execute: time_update
+    on_time:
+      - minutes: '*'
+        seconds: 0
+        then:
+          - script.execute: time_update
+
+script:
+  - id: time_update
+    then:
+      - lvgl.label.update:
+          id: lbl_clock
+          text: !lambda |-
+            return id(hass_time).now().strftime("%H:%M").c_str();
+      - lvgl.label.update:
+          id: lbl_main_page_title
+          text: !lambda |-
+            return id(hass_time).now().strftime("%d.%m.%Y").c_str();
+
+uart:
+  tx_pin: GPIO19
+  rx_pin: GPIO20
+  baud_rate: 115200
+  debug:
+
+binary_sensor:
+  - platform: gpio
+    id: user_button
+    internal: true
+    pin:
+      number: GPIO38
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+  - platform: lvgl
+    widget: button1
+    name: 'Button #1'
+  - platform: lvgl
+    widget: button2
+    name: 'Button #2'
+  - platform: lvgl
+    widget: button3
+    name: 'Button #3'
+  - platform: lvgl
+    widget: button4
+    name: 'Button #4'
+  - platform: lvgl
+    widget: button5
+    name: 'Button #5'
+  - platform: lvgl
+    widget: btn_1floor_off
+    name: '1 Floor Off'
+  - platform: lvgl
+    widget: btn_2floor_off
+    name: '2 Floor Off'
+
+sensor:
+  - platform: homeassistant
+    id: temperature_outdoor
+    entity_id: sensor.hass_outdoor_temp_01_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_outdoor
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_kitchen
+    entity_id: sensor.kjokken_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_kitchen
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_martin
+    entity_id: sensor.martin_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_martin
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+      - lvgl.label.update:
+          id: lbl_temperature_martin_2
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_eivind
+    entity_id: sensor.eivind_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_eivind
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+      - lvgl.label.update:
+          id: lbl_temperature_eivind_2
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_stue_1
+    entity_id: sensor.stue_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_stue_1
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_stue_2
+    entity_id: sensor.stue_sensor_2_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_stue_2
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_toilet
+    entity_id: sensor.toalett_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_toalett
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_bedrom
+    entity_id: sensor.soverom_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_soverom
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_bathroom
+    entity_id: sensor.bad_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_bathroom
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+  - platform: homeassistant
+    id: temperature_utebod
+    entity_id: sensor.utebod_sensor_1_temperature
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temperature_utebod
+          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+
+text_sensor:
+  - platform: homeassistant
+    id: light_martin
+    entity_id: light.silicon_labs_ezsp_martin_taklys
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_lightbulb_martin
+          state:
+            checked: !lambda return x == "on";
+      - lvgl.label.update:
+          id: lbl_lightbulb_martin_2
+          state:
+            checked: !lambda return x == "on";
+  - platform: homeassistant
+    id: light_eivind
+    entity_id: light.eivind_taklys_light
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_lightbulb_eivind
+          state:
+            checked: !lambda return x == "on";
+      - lvgl.label.update:
+          id: lbl_lightbulb_eivind_2
+          state:
+            checked: !lambda return x == "on";
+  - platform: homeassistant
+    id: light_soverom
+    entity_id: light.silicon_labs_ezsp_soverom_taklys
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_lightbulb_soverom
+          state:
+            checked: !lambda return x == "on";
+  - platform: homeassistant
+    id: light_juletre
+    entity_id: light.conecto_smart_plug_1_socket_1
+    on_value:
+      - lvgl.label.update:
+          id: lbl_button3
+          state:
+            checked: !lambda return x == "on";
+      - lvgl.widget.update:
+          id: button3
+          hidden: !lambda return x != "on" && x != "off";
+  - platform: homeassistant
+    id: remote_harmony_hub
+    entity_id: remote.harmony_hub
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_button5
+          state:
+            checked: !lambda return x == "on";
+  - platform: homeassistant
+    id: media_player_kjokken
+    entity_id: media_player.kjokken
+    internal: true
+    on_value:
+      - lvgl.label.update:
+          id: lbl_button1
+          state:
+            checked: !lambda return x == "playing";
+
+text:
+  - platform: lvgl
+    name: "Textarea 1 text"
+    widget: textarea_id_1
+    mode: text
+  - platform: lvgl
+    name: "Textarea 2 text"
+    widget: textarea_id_2
+    mode: text
+  - platform: lvgl
+    name: "Textarea 3 text"
+    widget: textarea_id_3
+    mode: text
+
+image:
+  - file: images/bg_autumn_480x480.jpg
+    id: img_bg
+    type: RGB565
+  - file: images/nrk_p3.jpg
+    id: img_nrk_p3_btn
+    type: RGB565
+  - file: images/nrk_p3_musikk.jpg
+    id: img_nrk_p3_musikk_btn
+    type: RGB565
+
+lvgl:
+  bottom_layer:
+    widgets:
+      - image:
+          align: CENTER
+          src: img_bg
+  theme:
+    button:
+      bg_opa: COVER
+      bg_color: 0x444444
+      shadow_width: 0
+      border_opa: COVER
+      border_width: 1
+      border_color: 0x666666
+    obj:
+      bg_opa: 35%
+      bg_color: 0x00000
+      border_opa: COVER
+      border_width: 1
+      border_color: 0x666666
+    label:
+      text_color: 0xffffff
+  style_definitions:
+    - id: page
+      bg_opa: TRANSP
+      pad_top: 100
+      pad_left: 20
+      pad_right: 20
+      pad_bottom: 20
+    - id: pagebg
+      pad_top: -100
+      pad_left: -20
+      pad_right: -20
+      pad_bottom: -20
+    - id: background
+      bg_opa: 35%
+      bg_color: 0x000000
+    - id: info_box
+      width: 210
+      height: 120
+    - id: grid_cell_stretch
+      grid_cell_x_align: STRETCH
+      grid_cell_y_align: STRETCH
+  top_layer:
+    widgets:
+      - label:
+          id: lbl_clock
+          text: '--:--'
+          text_font: f_24
+          x: 20
+          y: 20
+      - label:
+          text: "\uF1EB"
+          id: lbl_hastatus
+          align: top_right
+          text_font: montserrat_24 
+          x: -20
+          y: 20
+          text_align: right
+          hidden: true
+  on_idle:
+    - timeout: 30s
+      then:
+        - lvgl.page.show: main_page
+  pages:
+    - id: main_page
+      styles: page
+      on_swipe_left:
+        - lvgl.page.next:
+      on_swipe_right:
+        - lvgl.page.previous:
+      widgets:
+        - label:
+            id: lbl_main_page_title
+            text: ''
+            text_font: f_44b
+            align: TOP_MID
+            y: -100
+        - obj:
+            styles: info_box
+            align: TOP_LEFT
+            widgets:
+              - label:
+                  text: 'Utendørs'
+                  text_font: f_24
+              - label:
+                  id: lbl_temperature_outdoor
+                  text: '--.-°C'
+                  align: BOTTOM_MID
+                  text_font: f_48
+        - obj:
+            styles:
+              - info_box
+            align: TOP_RIGHT
+            widgets:
+              - label:
+                  text: 'Kjøkken'
+                  text_font: f_24
+              - label:
+                  id: lbl_temperature_kitchen
+                  text: '--.-°C'
+                  align: BOTTOM_MID
+                  text_font: f_48
+        - button:
+            id: button1
+            width: 72
+            height: 72
+            align: BOTTOM_LEFT
+            styles: background
+            widgets:
+              - label:
+                  id: lbl_button1
+                  align: CENTER
+                  text_font: montserrat_34
+                  text: "\uF001" # Music
+                  checked:
+                    text_color: green
+        - button:
+            id: button2
+            clip_corner: true
+            pad_all: 0
+            width: 72
+            height: 72
+            align: BOTTOM_LEFT
+            x: 92
+            styles: background
+            widgets:
+              - image:
+                  align: CENTER
+                  src: img_nrk_p3_btn
+        - button:
+            id: button3
+            clip_corner: true
+            pad_all: 0
+            width: 72
+            height: 72
+            align: BOTTOM_MId
+            styles: background
+            widgets:
+              - label:
+                  id: lbl_button3
+                  align: CENTER
+                  text_font: f_34
+                  text: "\uf1bb" # tree
+                  checked:
+                    text_color: gold
+        - button:
+            id: button4
+            hidden: true
+            width: 72
+            height: 72
+            align: BOTTOM_RIGHT
+            styles:
+              - grid_cell_stretch
+              - background
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: montserrat_34
+                  text: "\uF028" # mdi-lightbulb-outline
+        - button:
+            id: button5
+            width: 72
+            height: 72
+            align: BOTTOM_RIGHT
+            styles: background
+            widgets:
+              - label:
+                  id: lbl_button5
+                  align: CENTER
+                  text_font: montserrat_34
+                  text: "\uF008" # mdi-lightbulb-outline
+                  checked:
+                    text_color: green
+        - obj:
+            y: 140
+            height: SIZE_CONTENT
+            width: 100%
+            widgets:
+              - label:
+                  id: textarea_id_1
+                  width: 100%
+                  text_font: f_24
+                  long_mode: SCROLL_CIRCULAR
+                  y: 0
+              - label:
+                  id: textarea_id_2
+                  width: 100%
+                  text_font: f_24
+                  long_mode: SCROLL_CIRCULAR 
+                  y: 35
+              - label:
+                  id: textarea_id_3
+                  width: 100%
+                  text_font: f_24
+                  long_mode: SCROLL_CIRCULAR 
+                  y: 70
+    - id: page_1floor
+      styles: page
+      on_swipe_left:
+        - lvgl.page.next:
+      on_swipe_right:
+        - lvgl.page.previous:
+      widgets:
+        - label:
+            text: '1. etasje'
+            text_font: f_44b
+            align: TOP_MID
+            y: -100
+        - button:
+            id: btn_1floor_off
+            width: 100%
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
+            align: BOTTOM_MID
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: f_34
+                  text: "Alt av"
+        - obj:
+            width: 100%
+            height: 260
+            bg_opa: TRANSP
+            pad_all: 0
+            border_width: 0
+            layout:
+              type: grid
+              grid_columns: [fr(1), fr(1)]
+              pad_column: 20px
+              pad_row: 20px
+              grid_rows: [fr(1), fr(1)]
+            widgets:
+              - obj:
+                  styles: grid_cell_stretch
+                  widgets:
+                    - label:
+                        text: 'Stue #1'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_stue_1
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  widgets:
+                    - label:
+                        text: 'Stue #2'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_stue_2
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  widgets:
+                    - label:
+                        text: 'Toalett'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_toalett
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  widgets:
+                    - label:
+                        text: 'Utebod'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_utebod
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+    - id: page_2floor
+      styles: page
+      on_swipe_left:
+        - lvgl.page.next:
+      on_swipe_right:
+        - lvgl.page.previous:
+      widgets:
+        - label:
+            text: '2. etasje'
+            text_font: f_44b
+            align: TOP_MID
+            y: -100
+        - button:
+            id: btn_2floor_off
+            width: 100%
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
+            align: BOTTOM_MID
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: f_34
+                  text: "Alt av"
+        - obj:
+            width: 100%
+            height: 260
+            bg_opa: TRANSP
+            pad_all: 0
+            border_width: 0
+            layout:
+              type: grid
+              grid_columns: [fr(1), fr(1)]
+              pad_column: 20px
+              pad_row: 20px
+              grid_rows: [fr(1), fr(1)]
+            widgets:
+              - obj:
+                  styles: grid_cell_stretch
+                  on_short_click:
+                    - lvgl.page.show: page_martin
+                  widgets:
+                    - label:
+                        text: 'Martin'
+                        text_font: f_24
+                    - label:
+                        id: lbl_lightbulb_martin_2
+                        align: TOP_RIGHT
+                        text_font: f_24
+                        text: "\uf0eb" # Lightbulb
+                        checked:
+                          text_color: gold #0xffea00
+                    - label:
+                        id: lbl_temperature_martin_2
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  on_short_click:
+                    - lvgl.page.show: page_eivind
+                  widgets:
+                    - label:
+                        text: 'Eivind'
+                        text_font: f_24
+                    - label:
+                        id: lbl_lightbulb_eivind_2
+                        align: TOP_RIGHT
+                        text_font: f_24
+                        text: "\uf0eb" # Lightbulb
+                        checked:
+                          text_color: gold #0xffea00
+                    - label:
+                        id: lbl_temperature_eivind_2
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  widgets:
+                    - label:
+                        text: 'Soverom'
+                        text_font: f_24
+                    - label:
+                        id: lbl_lightbulb_soverom
+                        align: TOP_RIGHT
+                        text_font: f_24
+                        text: "\uf0eb" # Lightbulb
+                        checked:
+                          text_color: gold #0xffea00
+                    - label:
+                        id: lbl_temperature_soverom
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  widgets:
+                    - label:
+                        text: 'Bad'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_bathroom
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+    - id: page_martin
+      styles: page
+      on_swipe_left:
+        - lvgl.page.next:
+      on_swipe_right:
+        - lvgl.page.previous:
+      widgets:
+        - label:
+            text: 'Martin'
+            text_font: f_44b
+            align: TOP_MID
+            y: -100
+        - obj:
+            width: 210
+            height: 120
+            align: TOP_LEFT
+            widgets:
+              - label:
+                  text: 'Temperatur'
+                  text_font: f_24
+              - label:
+                  id: lbl_temperature_martin
+                  text: '--.-°C'
+                  align: BOTTOM_MID
+                  text_font: f_48
+        - button:
+            width: 72
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
+            align: BOTTOM_LEFT
+            id: btn_lightbulb_martin
+            widgets:
+              - label:
+                  id: lbl_lightbulb_martin
+                  align: CENTER
+                  text_font: f_34
+                  text: "\uf0eb" # Lightbulb
+                  checked:
+                    text_color: gold #0xffea00
+            on_short_click:
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: light.silicon_labs_ezsp_martin_taklys
+    - id: page_eivind
+      styles: page
+      on_swipe_left:
+        - lvgl.page.next:
+      on_swipe_right:
+        - lvgl.page.previous:
+      widgets:
+        - label:
+            text: 'Eivind'
+            text_font: f_44b
+            align: TOP_MID
+            y: -100
+        - obj:
+            width: 210
+            height: 120
+            align: TOP_LEFT
+            widgets:
+              - label:
+                  text: 'Temperatur'
+                  text_font: f_24
+              - label:
+                  id: lbl_temperature_eivind
+                  text: '--.-°C'
+                  align: BOTTOM_MID
+                  text_font: f_48
+        - button:
+            width: 72
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
+            align: BOTTOM_LEFT
+            id: btn_lightbulb_eivind
+            widgets:
+              - label:
+                  id: lbl_lightbulb_eivind
+                  align: CENTER
+                  text_font: f_34
+                  text: "\uf0eb" # Lightbulb
+                  checked:
+                    text_color: gold #0xffea00
+            on_short_click:
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: light.eivind_taklys_light
+    - id: page_setup
+      styles: page
+      skip: true
+      bg_color: 0x00000
+      bg_opa: 75%
+      widgets:
+        - button:
+            width: 72
+            height: 72
+            bg_opa: 35%
+            bg_color: 0x000000
+            align: BOTTOM_RIGHT
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: montserrat_34
+                  text: "\uF8A2"
+            on_click:
+              - lvgl.page.show: main_page
+
+font:
+  - file: gfonts://Montserrat@Medium
+    size: 24
+    bpp: 4
+    id: f_24
+    glyphsets:
+      - GF_Latin_Core
+    extras: 
+      - file: 'https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/7.x/otfs/Font%20Awesome%207%20Free-Solid-900.otf'
+        glyphs: ${glyphs}
+  - file: gfonts://Montserrat@Medium
+    size: 34
+    bpp: 4
+    id: f_34
+    glyphsets: GF_Latin_Core
+    extras: 
+      - file: 'https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/7.x/otfs/Font%20Awesome%207%20Free-Solid-900.otf'
+        glyphs: ${glyphs}
+  - file: gfonts://Montserrat@Medium
+    size: 48
+    bpp: 4
+    id: f_48
+    glyphsets: GF_Latin_Core
+    extras: 
+      - file: 'https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/7.x/otfs/Font%20Awesome%207%20Free-Solid-900.otf'
+        glyphs: ${glyphs}
+  - file: gfonts://Montserrat@Bold
+    size: 44
+    bpp: 4
+    id: f_44b
+    glyphsets: GF_Latin_Core
+    extras: 
+      - file: 'https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/7.x/otfs/Font%20Awesome%207%20Free-Solid-900.otf'
+        glyphs: ${glyphs}
