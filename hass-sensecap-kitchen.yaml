@@ -12,6 +12,7 @@ substitutions:
       "\uf028", # volume-high
       "\uf048", # backward-step
       "\uf051", # forward-step
+      "\uf1bb", # tree
     ]
 
 packages:
@@ -22,6 +23,7 @@ packages:
 #  build_path: "/config/esphome/.esphome/build/${name}"
 
 api:
+  batch_delay: 0ms  # Disable batching delay for immediate state updates  
   on_client_connected:
     - lvgl.widget.show: lbl_hastatus
   on_client_disconnected:
@@ -51,6 +53,16 @@ script:
           id: lbl_clock
           text: !lambda |-
             return id(hass_time).now().strftime("%H:%M").c_str();
+      - lvgl.label.update:
+          id: lbl_main_page_title
+          text: !lambda |-
+            return id(hass_time).now().strftime("%d.%m.%Y").c_str();
+
+uart:
+  tx_pin: GPIO19
+  rx_pin: GPIO20
+  baud_rate: 115200
+  debug:
 
 binary_sensor:
   - platform: gpio
@@ -71,9 +83,9 @@ binary_sensor:
   - platform: lvgl
     widget: button3
     name: 'Button #3'
-  # - platform: lvgl
-  #   widget: button4
-  #   name: 'Button #4'
+  - platform: lvgl
+    widget: button4
+    name: 'Button #4'
   - platform: lvgl
     widget: button5
     name: 'Button #5'
@@ -181,11 +193,11 @@ text_sensor:
       - lvgl.label.update:
           id: lbl_lightbulb_martin
           state:
-            checked: !lambda return (0 == x.compare(std::string{"on"}));
+            checked: !lambda return x == "on";
       - lvgl.label.update:
           id: lbl_lightbulb_martin_2
           state:
-            checked: !lambda return (0 == x.compare(std::string{"on"}));
+            checked: !lambda return x == "on";
   - platform: homeassistant
     id: light_eivind
     entity_id: light.eivind_taklys_light
@@ -194,11 +206,11 @@ text_sensor:
       - lvgl.label.update:
           id: lbl_lightbulb_eivind
           state:
-            checked: !lambda return (0 == x.compare(std::string{"on"}));
+            checked: !lambda return x == "on";
       - lvgl.label.update:
           id: lbl_lightbulb_eivind_2
           state:
-            checked: !lambda return (0 == x.compare(std::string{"on"}));
+            checked: !lambda return x == "on";
   - platform: homeassistant
     id: light_soverom
     entity_id: light.silicon_labs_ezsp_soverom_taklys
@@ -207,7 +219,18 @@ text_sensor:
       - lvgl.label.update:
           id: lbl_lightbulb_soverom
           state:
-            checked: !lambda return (0 == x.compare(std::string{"on"}));
+            checked: !lambda return x == "on";
+  - platform: homeassistant
+    id: light_juletre
+    entity_id: light.conecto_smart_plug_1_socket_1
+    on_value:
+      - lvgl.label.update:
+          id: lbl_button3
+          state:
+            checked: !lambda return x == "on";
+      - lvgl.widget.update:
+          id: button3
+          hidden: !lambda return x != "on" && x != "off";
   - platform: homeassistant
     id: remote_harmony_hub
     entity_id: remote.harmony_hub
@@ -216,7 +239,7 @@ text_sensor:
       - lvgl.label.update:
           id: lbl_button5
           state:
-            checked: !lambda return (0 == x.compare(std::string{"on"}));
+            checked: !lambda return x == "on";
   - platform: homeassistant
     id: media_player_kjokken
     entity_id: media_player.kjokken
@@ -225,7 +248,8 @@ text_sensor:
       - lvgl.label.update:
           id: lbl_button1
           state:
-            checked: !lambda return (0 == x.compare(std::string{"playing"}));
+            checked: !lambda return x == "playing";
+
 text:
   - platform: lvgl
     name: "Textarea 1 text"
@@ -252,7 +276,11 @@ image:
     type: RGB565
 
 lvgl:
-  disp_bg_image: img_bg
+  bottom_layer:
+    widgets:
+      - image:
+          align: CENTER
+          src: img_bg
   theme:
     button:
       bg_opa: COVER
@@ -319,6 +347,12 @@ lvgl:
       on_swipe_right:
         - lvgl.page.previous:
       widgets:
+        - label:
+            id: lbl_main_page_title
+            text: ''
+            text_font: f_44b
+            align: TOP_MID
+            y: -100
         - obj:
             styles: info_box
             align: TOP_LEFT
@@ -380,22 +414,27 @@ lvgl:
             align: BOTTOM_MId
             styles: background
             widgets:
-              - image:
+              - label:
+                  id: lbl_button3
                   align: CENTER
-                  src: img_nrk_p3_musikk_btn
-        # - button:
-        #     id: button4
-        #     width: 72
-        #     height: 72
-        #     align: BOTTOM_RIGHT
-        #     styles:
-        #       - grid_cell_stretch
-        #       - background
-        #     widgets:
-        #       - label:
-        #           align: CENTER
-        #           text_font: montserrat_34
-        #           text: "\uF028" # mdi-lightbulb-outline
+                  text_font: f_34
+                  text: "\uf1bb" # tree
+                  checked:
+                    text_color: gold
+        - button:
+            id: button4
+            hidden: true
+            width: 72
+            height: 72
+            align: BOTTOM_RIGHT
+            styles:
+              - grid_cell_stretch
+              - background
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: montserrat_34
+                  text: "\uF028" # mdi-lightbulb-outline
         - button:
             id: button5
             width: 72
