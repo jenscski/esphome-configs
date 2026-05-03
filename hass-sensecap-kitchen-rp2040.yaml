@@ -1,0 +1,25 @@
+esphome:
+  name: d1-rp2040
+  friendly_name: "SenseCAP Kitchen (rp2040)"
+
+rp2040:
+  board: rpipico
+
+# Enable logging
+logger:
+
+uart:
+  - id: esp32s3_serial
+    tx_pin: GPIO17
+    rx_pin: GPIO16
+    baud_rate: 115200
+
+i2c:
+  - sda: GPIO20
+    scl: GPIO21
+    scan: True
+
+power_supply:
+  - id: 'sensor_supply1'
+    pin: GPIO18
+    enable_on_boot: True
