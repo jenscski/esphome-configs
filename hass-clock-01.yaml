@@ -27,8 +27,6 @@ uart:
   baud_rate: 9600
   
 #i2c:
-
-# Test
   
 #time:
 #  - platform: ds1307
