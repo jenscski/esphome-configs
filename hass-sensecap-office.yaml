@@ -75,21 +75,6 @@ binary_sensor:
         input: true
         pullup: true
   - platform: lvgl
-    widget: button1
-    name: 'Button #1'
-  - platform: lvgl
-    widget: button2
-    name: 'Button #2'
-  - platform: lvgl
-    widget: button3
-    name: 'Button #3'
-  - platform: lvgl
-    widget: button4
-    name: 'Button #4'
-  - platform: lvgl
-    widget: button5
-    name: 'Button #5'
-  - platform: lvgl
     widget: btn_1floor_off
     name: '1 Floor Off'
   - platform: lvgl
@@ -220,49 +205,6 @@ text_sensor:
           id: lbl_lightbulb_soverom
           state:
             checked: !lambda return x == "on";
-  - platform: homeassistant
-    id: light_juletre
-    entity_id: light.conecto_smart_plug_1_socket_1
-    on_value:
-      - lvgl.label.update:
-          id: lbl_button3
-          state:
-            checked: !lambda return x == "on";
-      - lvgl.widget.update:
-          id: button3
-          hidden: !lambda return x != "on" && x != "off";
-  - platform: homeassistant
-    id: remote_harmony_hub
-    entity_id: remote.harmony_hub
-    internal: true
-    on_value:
-      - lvgl.label.update:
-          id: lbl_button5
-          state:
-            checked: !lambda return x == "on";
-  - platform: homeassistant
-    id: media_player_kjokken
-    entity_id: media_player.kjokken
-    internal: true
-    on_value:
-      - lvgl.label.update:
-          id: lbl_button1
-          state:
-            checked: !lambda return x == "playing";
-
-text:
-  - platform: lvgl
-    name: "Textarea 1 text"
-    widget: textarea_id_1
-    mode: text
-  - platform: lvgl
-    name: "Textarea 2 text"
-    widget: textarea_id_2
-    mode: text
-  - platform: lvgl
-    name: "Textarea 3 text"
-    widget: textarea_id_3
-    mode: text
 
 image:
   - file: images/bg_autumn_480x480.jpg
@@ -378,77 +320,6 @@ lvgl:
                   text: '--.-°C'
                   align: BOTTOM_MID
                   text_font: f_48
-        - button:
-            id: button1
-            width: 72
-            height: 72
-            align: BOTTOM_LEFT
-            styles: background
-            widgets:
-              - label:
-                  id: lbl_button1
-                  align: CENTER
-                  text_font: montserrat_34
-                  text: "\uF001" # Music
-                  checked:
-                    text_color: green
-        - button:
-            id: button2
-            clip_corner: true
-            pad_all: 0
-            width: 72
-            height: 72
-            align: BOTTOM_LEFT
-            x: 92
-            styles: background
-            widgets:
-              - image:
-                  align: CENTER
-                  src: img_nrk_p3_btn
-        - button:
-            id: button3
-            clip_corner: true
-            pad_all: 0
-            width: 72
-            height: 72
-            align: BOTTOM_MId
-            styles: background
-            widgets:
-              - label:
-                  id: lbl_button3
-                  align: CENTER
-                  text_font: f_34
-                  text: "\uf1bb" # tree
-                  checked:
-                    text_color: gold
-        - button:
-            id: button4
-            hidden: true
-            width: 72
-            height: 72
-            align: BOTTOM_RIGHT
-            styles:
-              - grid_cell_stretch
-              - background
-            widgets:
-              - label:
-                  align: CENTER
-                  text_font: montserrat_34
-                  text: "\uF028" # mdi-lightbulb-outline
-        - button:
-            id: button5
-            width: 72
-            height: 72
-            align: BOTTOM_RIGHT
-            styles: background
-            widgets:
-              - label:
-                  id: lbl_button5
-                  align: CENTER
-                  text_font: montserrat_34
-                  text: "\uF008" # mdi-lightbulb-outline
-                  checked:
-                    text_color: green
         - obj:
             y: 140
             height: SIZE_CONTENT
