@@ -160,14 +160,14 @@ sensor:
       - lvgl.label.update:
           id: lbl_temperature_bathroom
           text: !lambda return str_sprintf("%.1f°C", x).c_str();
-  - platform: homeassistant
-    id: temperature_utebod
-    entity_id: sensor.utebod_sensor_1_temperature
-    internal: true
-    on_value:
-      - lvgl.label.update:
-          id: lbl_temperature_utebod
-          text: !lambda return str_sprintf("%.1f°C", x).c_str();
+#  - platform: homeassistant
+#    id: temperature_utebod
+#    entity_id: sensor.utebod_sensor_1_temperature
+#    internal: true
+#    on_value:
+#      - lvgl.label.update:
+#          id: lbl_temperature_utebod
+#          text: !lambda return str_sprintf("%.1f°C", x).c_str();
 
 text_sensor:
   - platform: homeassistant
@@ -296,53 +296,58 @@ lvgl:
             align: TOP_MID
             y: -100
         - obj:
-            styles: info_box
-            align: TOP_LEFT
-            widgets:
-              - label:
-                  text: 'Utendørs'
-                  text_font: f_24
-              - label:
-                  id: lbl_temperature_outdoor
-                  text: '--.-°C'
-                  align: BOTTOM_MID
-                  text_font: f_48
-        - obj:
-            styles:
-              - info_box
-            align: TOP_RIGHT
-            widgets:
-              - label:
-                  text: 'Kjøkken'
-                  text_font: f_24
-              - label:
-                  id: lbl_temperature_kitchen
-                  text: '--.-°C'
-                  align: BOTTOM_MID
-                  text_font: f_48
-        - obj:
-            y: 140
-            height: SIZE_CONTENT
             width: 100%
+            height: 260
+            bg_opa: TRANSP
+            pad_all: 0
+            border_width: 0
+            layout:
+              type: grid
+              grid_columns: [fr(1), fr(1)]
+              pad_column: 20px
+              pad_row: 20px
+              grid_rows: [fr(1), fr(1)]
             widgets:
-              - label:
-                  id: textarea_id_1
-                  width: 100%
-                  text_font: f_24
-                  long_mode: SCROLL_CIRCULAR
-                  y: 0
-              - label:
-                  id: textarea_id_2
-                  width: 100%
-                  text_font: f_24
-                  long_mode: SCROLL_CIRCULAR 
-                  y: 35
-              - label:
-                  id: textarea_id_3
-                  width: 100%
-                  text_font: f_24
-                  long_mode: SCROLL_CIRCULAR 
-                  y: 70
+              - obj:
+                  styles: grid_cell_stretch
+                  widgets:
+                    - label:
+                        text: 'Utendørs'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_outdoor
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                  text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  widgets:
+                    - label:
+                        text: 'Bad'
+                        text_font: f_24
+                    - label:
+                        id: lbl_temperature_bathroom
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
+              - obj:
+                  styles: grid_cell_stretch
+                  widgets:
+                    - label:
+                        text: 'Soverom'
+                        text_font: f_24
+                    - label:
+                        id: lbl_lightbulb_soverom
+                        align: TOP_RIGHT
+                        text_font: f_24
+                        text: "\uf0eb" # Lightbulb
+                        checked:
+                          text_color: gold #0xffea00
+                    - label:
+                        id: lbl_temperature_soverom
+                        text: '--.-°C'
+                        align: BOTTOM_MID
+                        text_font: f_48
     - id: page_1floor
       styles: page
       on_swipe_left:
@@ -417,10 +422,10 @@ lvgl:
                   styles: grid_cell_stretch
                   widgets:
                     - label:
-                        text: 'Utebod'
+                        text: 'Kjøkken'
                         text_font: f_24
                     - label:
-                        id: lbl_temperature_utebod
+                        id: lbl_temperature_kitchen
                         text: '--.-°C'
                         align: BOTTOM_MID
                         text_font: f_48
@@ -498,35 +503,6 @@ lvgl:
                           text_color: gold #0xffea00
                     - label:
                         id: lbl_temperature_eivind_2
-                        text: '--.-°C'
-                        align: BOTTOM_MID
-                        text_font: f_48
-              - obj:
-                  styles: grid_cell_stretch
-                  widgets:
-                    - label:
-                        text: 'Soverom'
-                        text_font: f_24
-                    - label:
-                        id: lbl_lightbulb_soverom
-                        align: TOP_RIGHT
-                        text_font: f_24
-                        text: "\uf0eb" # Lightbulb
-                        checked:
-                          text_color: gold #0xffea00
-                    - label:
-                        id: lbl_temperature_soverom
-                        text: '--.-°C'
-                        align: BOTTOM_MID
-                        text_font: f_48
-              - obj:
-                  styles: grid_cell_stretch
-                  widgets:
-                    - label:
-                        text: 'Bad'
-                        text_font: f_24
-                    - label:
-                        id: lbl_temperature_bathroom
                         text: '--.-°C'
                         align: BOTTOM_MID
                         text_font: f_48
@@ -620,25 +596,6 @@ lvgl:
                   action: light.toggle
                   data:
                     entity_id: light.eivind_taklys_light
-    - id: page_setup
-      styles: page
-      skip: true
-      bg_color: 0x00000
-      bg_opa: 75%
-      widgets:
-        - button:
-            width: 72
-            height: 72
-            bg_opa: 35%
-            bg_color: 0x000000
-            align: BOTTOM_RIGHT
-            widgets:
-              - label:
-                  align: CENTER
-                  text_font: montserrat_34
-                  text: "\uF8A2"
-            on_click:
-              - lvgl.page.show: main_page
 
 font:
   - file: gfonts://Montserrat@Medium
