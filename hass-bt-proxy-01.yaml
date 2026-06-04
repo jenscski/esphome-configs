@@ -7,9 +7,6 @@ substitutions:
 packages:
   common: !include packages/common-32-api.yaml
 
-external_components:
-  - source: github://bendikwa/esphome-igrill@v1.2
-
 esp32:
   flash_size: 8MB
   variant: ESP32S3
