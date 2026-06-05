@@ -17,20 +17,10 @@ esp32:
 
 esp32_ble_tracker:
   scan_parameters:
-    # We currently use the defaults to ensure Bluetooth
-    # can co-exist with WiFi In the future we may be able to
-    # enable the built-in coexistence logic in ESP-IDF
     active: true
 
 bluetooth_proxy:
   active: true
-
-#binary_sensor:
-#  - platform: gpio
-#    pin:
-#      number: GPIO41
-#      inverted: true
-#    name: Button
 
 light:
   - platform: esp32_rmt_led_strip
