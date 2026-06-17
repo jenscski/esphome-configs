@@ -1,0 +1,25 @@
+esphome:
+  name: hass-bt-proxy-04
+  friendly_name: hass-bt-proxy-04
+
+# Replace this with your actual platform if you aren't using ESP32.
+esp32:
+  board: esp32dev
+
+logger:
+
+api:
+  encryption:
+    key: "TmuBmB6cbb44H6KAe4d/O+0nHfVG0S4GlH4SfPxsy80="
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: hass-bt-proxy-0 Fallback Hotspot
+    password: "QPAFvvceq92a"
+
+captive_portal:
