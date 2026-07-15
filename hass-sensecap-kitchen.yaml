@@ -412,7 +412,7 @@ lvgl:
             width: 72
             height: 72
             align: BOTTOM_LEFT
-            x: 92
+            x: 164
             styles: background
             widgets:
               - image:
