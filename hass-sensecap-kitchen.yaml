@@ -426,6 +426,7 @@ lvgl:
             pad_all: 0
             width: 72
             height: 72
+            styles: background
             align: BOTTOM_MID
             x: 92
             widgets:
