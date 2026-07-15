@@ -423,18 +423,20 @@ lvgl:
                     text_color: gold
         - button:
             id: button4
-            hidden: true
+            clip_corner: true
+            pad_all: 0
             width: 72
             height: 72
-            align: BOTTOM_RIGHT
-            styles:
-              - grid_cell_stretch
-              - background
+            align: BOTTOM_MId
+            styles: background
             widgets:
               - label:
+                  id: lbl_button4
                   align: CENTER
-                  text_font: montserrat_34
-                  text: "\uF028" # mdi-lightbulb-outline
+                  text_font: f_34
+                  text: "\uf1bb" # tree
+                  checked:
+                    text_color: gold
         - button:
             id: button5
             width: 72
