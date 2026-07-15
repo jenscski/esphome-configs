@@ -45,54 +45,59 @@ pca9554:
     pin_count: 16
 
 display:
-  - platform: st7701s
+  - platform: mipi_rgb
+    model: SEEED-INDICATOR-D1
     id: sensecap_display
-    auto_clear_enabled: false
-    data_rate: 4MHz
-    update_interval: never
-    spi_mode: MODE3
-    color_order: RGB
-    dimensions:
-      width: 480
-      height: 480
-    invert_colors: true
-    transform:
-      mirror_x: true
-      mirror_y: true
-    cs_pin:
-      pca9554: pca9554a_device
-      number: 4
-    reset_pin:
-      pca9554: pca9554a_device
-      number: 5
-    de_pin: GPIO18
-    hsync_pin: GPIO16
-    vsync_pin: GPIO17
-    pclk_pin: GPIO21
-    init_sequence:
-      - 1 # select canned init sequence number 1
-      - delay 5ms
-      - [0xE0, 0x1F] # Set sunlight readable enhancement
-    data_pins:
-      red:
-        - GPIO4 #r1
-        - GPIO3 #r2
-        - GPIO2 #r3
-        - GPIO1 #r4
-        - GPIO0 #r5
-      green:
-        - GPIO10 #g0
-        - GPIO9 #g1
-        - GPIO8 #g2
-        - GPIO7 #g3
-        - GPIO6 #g4
-        - GPIO5 #g5
-      blue:
-        - GPIO15 #b1
-        - GPIO14 #b2
-        - GPIO13 #b3
-        - GPIO12 #b4
-        - GPIO11 #b5
+
+# display:
+  # - platform: st7701s
+    # id: sensecap_display
+    # auto_clear_enabled: false
+    # data_rate: 4MHz
+    # update_interval: never
+    # spi_mode: MODE3
+    # color_order: RGB
+    # dimensions:
+      # width: 480
+      # height: 480
+    # invert_colors: true
+    # transform:
+      # mirror_x: true
+      # mirror_y: true
+    # cs_pin:
+      # pca9554: pca9554a_device
+      # number: 4
+    # reset_pin:
+      # pca9554: pca9554a_device
+      # number: 5
+    # de_pin: GPIO18
+    # hsync_pin: GPIO16
+    # vsync_pin: GPIO17
+    # pclk_pin: GPIO21
+    # init_sequence:
+      # - 1 # select canned init sequence number 1
+      # - delay 5ms
+      # - [0xE0, 0x1F] # Set sunlight readable enhancement
+    # data_pins:
+      # red:
+        # - GPIO4 #r1
+        # - GPIO3 #r2
+        # - GPIO2 #r3
+        # - GPIO1 #r4
+        # - GPIO0 #r5
+      # green:
+        # - GPIO10 #g0
+        # - GPIO9 #g1
+        # - GPIO8 #g2
+        # - GPIO7 #g3
+        # - GPIO6 #g4
+        # - GPIO5 #g5
+      # blue:
+        # - GPIO15 #b1
+        # - GPIO14 #b2
+        # - GPIO13 #b3
+        # - GPIO12 #b4
+        # - GPIO11 #b5
 
 light:
   - platform: monochromatic
