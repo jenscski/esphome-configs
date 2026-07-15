@@ -411,8 +411,7 @@ lvgl:
             pad_all: 0
             width: 72
             height: 72
-            align: BOTTOM_LEFT
-            x: 164
+            align: BOTTOM_MID
             styles: background
             widgets:
               - image:
@@ -424,7 +423,7 @@ lvgl:
             pad_all: 0
             width: 72
             height: 72
-            align: BOTTOM_MId
+            align: BOTTOM_MID
             styles: background
             widgets:
               - label:
