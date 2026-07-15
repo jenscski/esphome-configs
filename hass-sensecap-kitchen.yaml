@@ -229,7 +229,7 @@ text_sensor:
           state:
             checked: !lambda return x == "on";
       - lvgl.widget.update:
-          id: button3
+          id: button4
           hidden: !lambda return x != "on" && x != "off";
   - platform: homeassistant
     id: remote_harmony_hub
