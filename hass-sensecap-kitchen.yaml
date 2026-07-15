@@ -225,7 +225,7 @@ text_sensor:
     entity_id: light.conecto_smart_plug_1_socket_1
     on_value:
       - lvgl.label.update:
-          id: lbl_button3
+          id: lbl_button4
           state:
             checked: !lambda return x == "on";
       - lvgl.widget.update:
@@ -411,16 +411,13 @@ lvgl:
             pad_all: 0
             width: 72
             height: 72
-            align: BOTTOM_MId
+            align: BOTTOM_LEFT
+            x: 92
             styles: background
             widgets:
-              - label:
-                  id: lbl_button3
+              - image:
                   align: CENTER
-                  text_font: f_34
-                  text: "\uf1bb" # tree
-                  checked:
-                    text_color: gold
+                  src: img_nrk_p3_btn
         - button:
             id: button4
             clip_corner: true
