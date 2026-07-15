@@ -427,7 +427,7 @@ lvgl:
             width: 72
             height: 72
             align: BOTTOM_MID
-            x: 276
+            x: 100
             widgets:
               - label:
                   id: lbl_button4
