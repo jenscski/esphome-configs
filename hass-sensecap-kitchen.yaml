@@ -265,16 +265,20 @@ text:
     mode: text
 
 image:
-  - file: images/bg_autumn_480x480.jpg
+  - platform: file
+    file: images/bg_autumn_480x480.jpg
     id: img_bg
     type: RGB565
-  - file: images/nrk_p3.jpg
+  - platform: file
+    file: images/nrk_p3.jpg
     id: img_nrk_p3_btn
     type: RGB565
-  - file: images/nrk_p1.jpg
+  - platform: file
+    file: images/nrk_p1.jpg
     id: img_nrk_p1_btn
     type: RGB565
-  - file: images/nrk_p3_musikk.jpg
+  - platform: file
+    file: images/nrk_p3_musikk.jpg
     id: img_nrk_p3_musikk_btn
     type: RGB565
 
