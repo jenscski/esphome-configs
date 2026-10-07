@@ -31,3 +31,7 @@ light:
     id: status_led
     name: Light
     restore_mode: ALWAYS_OFF
+
+api:
+  encryption:
+    key: !secret hass_bt_proxy_01__encryption_key
