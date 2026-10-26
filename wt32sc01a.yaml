@@ -75,7 +75,7 @@ image:
 
 lvgl:
   disp_bg_image: img_bg
-  rotation: 180
+  rotation: 90
   style_definitions:
     - id: header_footer
       bg_color: 0x2F8CD8
