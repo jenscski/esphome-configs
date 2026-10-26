@@ -69,7 +69,8 @@ display:
     auto_clear_enabled: False
 
 image:
-  - file: images/bg_autumn_480x480.jpg
+  - platform: file
+    file: images/bg_autumn_480x480.jpg
     id: img_bg
     type: RGB565
 
