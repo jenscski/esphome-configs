@@ -65,7 +65,6 @@ display:
     cs_pin: 15
     dc_pin: 33
     reset_pin: 34
-    rotation: 180
     invert_colors: true
     auto_clear_enabled: False
     dimensions:
@@ -75,6 +74,7 @@ display:
       offset_width: 2
 
 lvgl:
+  rotation: 180
   pages:
     - id: main_page
       widgets:
