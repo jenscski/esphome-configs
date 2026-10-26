@@ -13,10 +13,10 @@ esphome:
 
 esp32:
   board: m5stack-atom
-  framework:
-    type: esp-idf
-    sdkconfig_options:
-      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
+#  framework:
+#    type: esp-idf
+#    sdkconfig_options:
+#      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
 
 sensor:
 logger:
