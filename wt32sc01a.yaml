@@ -2,13 +2,14 @@ substitutions:
   name: wt32sc01a
   friendly_name: 'WT32-SC01 3.5"'
   comment: WT32-SC01 3.5"
-  board: esp32dev
+  board: esp-wrover-kit
 
 packages:
   common: !include packages/common-32-mqtt.yaml
 
 esp32:
   flash_size: 16MB
+  variant: ESP32
 #  framework:
 #    sdkconfig_options:
 #      CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
