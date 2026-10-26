@@ -2,7 +2,7 @@ substitutions:
   name: wt32sc01a
   friendly_name: 'WT32-SC01 3.5"'
   comment: WT32-SC01 3.5"
-  board: esp-wrover-kit
+  board: esp32dev
 
 packages:
   common: !include packages/common-32-mqtt.yaml
