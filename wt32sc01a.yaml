@@ -75,7 +75,11 @@ image:
     type: RGB565
 
 lvgl:
-  disp_bg_image: img_bg
+  bottom_layer:
+    widgets:
+      - image:
+          align: CENTER
+          src: img_bg
   rotation: 90
   style_definitions:
     - id: header_footer
