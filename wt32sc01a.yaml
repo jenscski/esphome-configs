@@ -65,8 +65,6 @@ display:
       ignore_strapping_warning: true
     dc_pin: GPIO21
     reset_pin: GPIO22
-    invert_colors: false
-    auto_clear_enabled: False
 
 #  - platform: ili9xxx
 #    id: wt32sc01a_display
