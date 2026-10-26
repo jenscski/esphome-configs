@@ -1,11 +1,3 @@
-substitutions:
-  wifi_reboot_timeout: 5min
-  api_timeout: 15min
-  name: test-w5500-m5stack-atom
-  friendly_name: 'W5500 @ Atom Lite Test #1'
-  comment: W5500 @ Atom Lite
-  board: m5stack-atom
-
 esphome:
   name: test-w5500-m5stack-atom
   comment: W5500 @ Atom Lite
