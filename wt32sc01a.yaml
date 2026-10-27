@@ -79,7 +79,7 @@ display:
 
 image:
   - platform: file
-    file: images/bg_autumn_480x480.jpg
+    file: images/img_water_180x320.jpg
     id: img_bg
     type: RGB565
 
